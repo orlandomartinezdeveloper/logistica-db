@@ -1,195 +1,193 @@
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+/////////////////////////////////////////////////////
+// USERS
+/////////////////////////////////////////////////////
 
------------------------------------------------------------
--- USERS
------------------------------------------------------------
-CREATE TABLE users (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(150) NOT NULL,
-  phone VARCHAR(20),
-  email VARCHAR(150),
-  role ENUM('motorista', 'ajudante', 'gestor', 'administrador') NOT NULL,
-  status ENUM('ativo', 'inativo') DEFAULT 'ativo',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+Table users {
+  id int [pk, increment]
+  name varchar(150)
+  phone varchar(20)
+  email varchar(150)
+  role varchar(50) // motorista, ajudante, gestor, administrador
+  status varchar(20) // ativo, inativo
+  password_hash varchar(255)
+  photo_url varchar(255)
+  created_at datetime
+  updated_at datetime
+}
 
------------------------------------------------------------
--- STORES
------------------------------------------------------------
-CREATE TABLE stores (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  address VARCHAR(255),
-  city VARCHAR(100),
-  state VARCHAR(50),
-  maps_url VARCHAR(255),
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+/////////////////////////////////////////////////////
+// VEHICLES
+/////////////////////////////////////////////////////
 
------------------------------------------------------------
--- DESTINATIONS
------------------------------------------------------------
-CREATE TABLE destinations (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(150) NOT NULL,
-  address VARCHAR(255),
-  city VARCHAR(100),
-  state VARCHAR(50),
-  latitude DECIMAL(10,7),
-  longitude DECIMAL(10,7),
-  type ENUM('store','client','depot','other') DEFAULT 'other',
-  maps_url VARCHAR(255),
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+Table vehicles {
+  id int [pk, increment]
+  plate_number varchar(20) [unique]
+  model varchar(100)
+  status varchar(20) // ativo, inativo, manutencao
+  current_km bigint
+  created_at datetime
+  updated_at datetime
+}
 
------------------------------------------------------------
--- VEHICLES
------------------------------------------------------------
-CREATE TABLE vehicles (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  plate_number VARCHAR(20) UNIQUE NOT NULL,
-  model VARCHAR(100),
-  status ENUM('ativo','inativo','manutencao') DEFAULT 'ativo',
-  current_km BIGINT DEFAULT 0,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+/////////////////////////////////////////////////////
+// STORES (Lojas próprias / depósitos / centros)
+/////////////////////////////////////////////////////
 
------------------------------------------------------------
--- MAINTENANCE ITEMS
------------------------------------------------------------
-CREATE TABLE maintenance_items (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  description VARCHAR(255),
-  interval_km INT,
-  interval_months INT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+Table stores {
+  id int [pk, increment]
+  name varchar(100)
+  address varchar(255)
+  city varchar(100)
+  state varchar(50)
+  maps_url varchar(255)
+  created_at datetime
+  updated_at datetime
+}
 
------------------------------------------------------------
--- VEHICLE MAINTENANCES
------------------------------------------------------------
-CREATE TABLE vehicle_maintenances (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  vehicle_id INT NOT NULL,
-  maintenance_item_id INT NOT NULL,
-  performed_at_date DATE,
-  performed_at_km BIGINT,
-  next_due_km BIGINT,
-  next_due_date DATE,
-  notes VARCHAR(255),
-  created_by INT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
-  FOREIGN KEY (maintenance_item_id) REFERENCES maintenance_items(id),
-  FOREIGN KEY (created_by) REFERENCES users(id)
-) ENGINE=InnoDB;
+/////////////////////////////////////////////////////
+// DESTINATIONS (Clientes / destinos externos)
+/////////////////////////////////////////////////////
 
------------------------------------------------------------
--- MAINTENANCE ALERTS
------------------------------------------------------------
-CREATE TABLE maintenance_alerts (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  vehicle_id INT NOT NULL,
-  maintenance_item_id INT NOT NULL,
-  triggered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  message VARCHAR(255),
-  is_resolved BOOLEAN DEFAULT FALSE,
-  resolved_at DATETIME NULL,
-  FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
-  FOREIGN KEY (maintenance_item_id) REFERENCES maintenance_items(id)
-) ENGINE=InnoDB;
+Table destinations {
+  id int [pk, increment]
+  name varchar(150)
+  address varchar(255)
+  city varchar(100)
+  state varchar(50)
+  latitude decimal(10,7)
+  longitude decimal(10,7)
+  type varchar(50) // store, client, depot, other
+  maps_url varchar(255)
+  created_at datetime
+  updated_at datetime
+}
 
------------------------------------------------------------
--- TASKS
------------------------------------------------------------
-CREATE TABLE tasks (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  title VARCHAR(100) NOT NULL,
-  description TEXT,
-  priority ENUM('normal','importante','urgente') DEFAULT 'normal',
-  status ENUM('em_espera','em_processo','concluida') DEFAULT 'em_espera',
-  store_id INT NULL,
-  destination_id INT NULL,
-  created_by INT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (store_id) REFERENCES stores(id),
-  FOREIGN KEY (destination_id) REFERENCES destinations(id),
-  FOREIGN KEY (created_by) REFERENCES users(id)
-) ENGINE=InnoDB;
+/////////////////////////////////////////////////////
+// TASKS (Tarefas solicitadas)
+/////////////////////////////////////////////////////
 
------------------------------------------------------------
--- TASK ASSIGNMENTS (MÚLTIPLES MOTORISTAS + AJUDANTES)
------------------------------------------------------------
-CREATE TABLE task_assignments (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  task_id INT NOT NULL,
-  user_id INT NOT NULL,
-  role ENUM('motorista','ajudante') NOT NULL,
-  assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (task_id) REFERENCES tasks(id),
-  FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB;
+Table tasks {
+  id int [pk, increment]
+  title varchar(150)
+  description text
+  priority varchar(20) // normal, importante, urgente
+  status varchar(20) // em_espera, em_processo, concluida
+  store_id int [ref: > stores.id]
+  destination_id int [ref: > destinations.id]
+  created_by int [ref: > users.id]
+  created_at datetime
+  updated_at datetime
+}
 
------------------------------------------------------------
--- ROUTES
------------------------------------------------------------
-CREATE TABLE routes (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  driver_id INT,
-  assistant_id INT,
-  vehicle_id INT,
-  store_id INT,
-  destination_id INT,
-  date DATE,
-  priority ENUM('normal','importante','urgente') DEFAULT 'normal',
-  status ENUM('em_espera','em_processo','concluida') DEFAULT 'em_espera',
-  created_by INT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (driver_id) REFERENCES users(id),
-  FOREIGN KEY (assistant_id) REFERENCES users(id),
-  FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
-  FOREIGN KEY (store_id) REFERENCES stores(id),
-  FOREIGN KEY (destination_id) REFERENCES destinations(id),
-  FOREIGN KEY (created_by) REFERENCES users(id)
-) ENGINE=InnoDB;
+/////////////////////////////////////////////////////
+// TASK ASSIGNMENTS (motoristas + ajudantes)
+/////////////////////////////////////////////////////
 
------------------------------------------------------------
--- VEHICLE USAGES
------------------------------------------------------------
-CREATE TABLE vehicle_usages (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  vehicle_id INT NOT NULL,
-  driver_id INT NOT NULL,
-  route_id INT,
-  start_km BIGINT,
-  end_km BIGINT,
-  date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  notes VARCHAR(255),
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (vehicle_id) REFERENCES vehicles(id),
-  FOREIGN KEY (driver_id) REFERENCES users(id),
-  FOREIGN KEY (route_id) REFERENCES routes(id)
-) ENGINE=InnoDB;
+Table task_assignments {
+  id int [pk, increment]
+  task_id int [ref: > tasks.id]
+  user_id int [ref: > users.id] // motorista o ajudante
+  role varchar(20) // motorista, ajudante
+  assigned_at datetime
+}
 
------------------------------------------------------------
--- NOTIFICATIONS
------------------------------------------------------------
-CREATE TABLE notifications (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  user_id INT NOT NULL,
-  message VARCHAR(255),
-  is_read BOOLEAN DEFAULT FALSE,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB;
+/////////////////////////////////////////////////////
+// ROUTES (Roteiros do dia)
+/////////////////////////////////////////////////////
 
-SET FOREIGN_KEY_CHECKS = 1;
+Table routes {
+  id int [pk, increment]
+  date date
+  priority varchar(20) // normal, importante, urgente
+  status varchar(20) // em_espera, em_processo, concluida
+  store_id int [ref: > stores.id]
+  destination_id int [ref: > destinations.id]
+  created_by int [ref: > users.id]
+  created_at datetime
+  updated_at datetime
+}
+
+/////////////////////////////////////////////////////
+// ROUTE ASSIGNMENTS (motoristas + ajudantes)
+/////////////////////////////////////////////////////
+
+Table route_assignments {
+  id int [pk, increment]
+  route_id int [ref: > routes.id]
+  user_id int [ref: > users.id]
+  role varchar(20) // motorista, ajudante
+  assigned_at datetime
+}
+
+/////////////////////////////////////////////////////
+// VEHICLE DAILY KM (registros de km)
+/////////////////////////////////////////////////////
+
+Table vehicle_usages {
+  id int [pk, increment]
+  vehicle_id int [ref: > vehicles.id]
+  user_id int [ref: > users.id]
+  route_id int [ref: > routes.id]
+  start_km bigint
+  end_km bigint
+  date datetime
+  notes varchar(255)
+  created_at datetime
+}
+
+/////////////////////////////////////////////////////
+// MAINTENANCE ITEMS
+/////////////////////////////////////////////////////
+
+Table maintenance_items {
+  id int [pk, increment]
+  name varchar(100)
+  description varchar(255)
+  interval_km int
+  interval_months int
+  created_at datetime
+  updated_at datetime
+}
+
+/////////////////////////////////////////////////////
+// VEHICLE MAINTENANCE HISTORY
+/////////////////////////////////////////////////////
+
+Table vehicle_maintenances {
+  id int [pk, increment]
+  vehicle_id int [ref: > vehicles.id]
+  maintenance_item_id int [ref: > maintenance_items.id]
+  performed_at_date date
+  performed_at_km bigint
+  next_due_km bigint
+  next_due_date date
+  notes varchar(255)
+  created_by int [ref: > users.id]
+  created_at datetime
+}
+
+/////////////////////////////////////////////////////
+// MAINTENANCE ALERTS
+/////////////////////////////////////////////////////
+
+Table maintenance_alerts {
+  id int [pk, increment]
+  vehicle_id int [ref: > vehicles.id]
+  maintenance_item_id int [ref: > maintenance_items.id]
+  message varchar(255)
+  triggered_at datetime
+  is_resolved bool
+  resolved_at datetime
+}
+
+/////////////////////////////////////////////////////
+// NOTIFICATIONS
+/////////////////////////////////////////////////////
+
+Table notifications {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  message varchar(255)
+  is_read bool
+  created_at datetime
+}
