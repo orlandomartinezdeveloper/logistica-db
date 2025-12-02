@@ -25,12 +25,13 @@ Table vehicles {
   model varchar(100)
   status varchar(20) // ativo, inativo, manutencao
   current_km bigint
+  photo_url varchar(255) // **imagen del vehículo**
   created_at datetime
   updated_at datetime
 }
 
 /////////////////////////////////////////////////////
-// STORES (Lojas próprias / depósitos / centros)
+// STORES
 /////////////////////////////////////////////////////
 
 Table stores {
@@ -40,12 +41,13 @@ Table stores {
   city varchar(100)
   state varchar(50)
   maps_url varchar(255)
+  image_url varchar(255) // **imagen de la tienda**
   created_at datetime
   updated_at datetime
 }
 
 /////////////////////////////////////////////////////
-// DESTINATIONS (Clientes / destinos externos)
+// DESTINATIONS
 /////////////////////////////////////////////////////
 
 Table destinations {
@@ -58,12 +60,13 @@ Table destinations {
   longitude decimal(10,7)
   type varchar(50) // store, client, depot, other
   maps_url varchar(255)
+  image_url varchar(255) // **imagen del destino**
   created_at datetime
   updated_at datetime
 }
 
 /////////////////////////////////////////////////////
-// TASKS (Tarefas solicitadas)
+// TASKS
 /////////////////////////////////////////////////////
 
 Table tasks {
@@ -80,19 +83,19 @@ Table tasks {
 }
 
 /////////////////////////////////////////////////////
-// TASK ASSIGNMENTS (motoristas + ajudantes)
+// TASK ASSIGNMENTS
 /////////////////////////////////////////////////////
 
 Table task_assignments {
   id int [pk, increment]
   task_id int [ref: > tasks.id]
-  user_id int [ref: > users.id] // motorista o ajudante
+  user_id int [ref: > users.id]
   role varchar(20) // motorista, ajudante
   assigned_at datetime
 }
 
 /////////////////////////////////////////////////////
-// ROUTES (Roteiros do dia)
+// ROUTES
 /////////////////////////////////////////////////////
 
 Table routes {
@@ -108,7 +111,7 @@ Table routes {
 }
 
 /////////////////////////////////////////////////////
-// ROUTE ASSIGNMENTS (motoristas + ajudantes)
+// ROUTE ASSIGNMENTS
 /////////////////////////////////////////////////////
 
 Table route_assignments {
@@ -120,7 +123,7 @@ Table route_assignments {
 }
 
 /////////////////////////////////////////////////////
-// VEHICLE DAILY KM (registros de km)
+// VEHICLE USAGES (KM)
 /////////////////////////////////////////////////////
 
 Table vehicle_usages {
@@ -150,7 +153,7 @@ Table maintenance_items {
 }
 
 /////////////////////////////////////////////////////
-// VEHICLE MAINTENANCE HISTORY
+// VEHICLE MAINTENANCES
 /////////////////////////////////////////////////////
 
 Table vehicle_maintenances {
