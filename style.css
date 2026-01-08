@@ -1,0 +1,331 @@
+@font-face {
+    font-family: 'PoppinsLight';
+    src: url('fonts/Poppins-Light.woff2') format('woff2');
+    font-weight: lighter;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #87CEEB, #B0E2FF);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* -------------------------------------------------- */
+/* FONDO CON MONTAÑAS - EFECTO PARALLAX INVERSO Y LENTO */
+/* -------------------------------------------------- */
+
+.mountains-parallax {
+    position: absolute;
+    bottom: 100px; /* Misma posición que antes */
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background-image: url('img/montanhas.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position: 0 bottom;
+    z-index: 0; /* Detrás de todo */
+    opacity: 0.85; /* Ligera transparencia */
+    
+    /* EFECTO PARALLAX INVERSO (de izquierda a derecha) y MÁS LENTO */
+    animation: parallaxMountainsReverse 60s linear infinite; /* 60s = muy lento */
+}
+
+/* Animación parallax inversa (de izquierda a derecha) */
+@keyframes parallaxMountainsReverse {
+    0% {
+        background-position: 1000px bottom; /* Empieza desplazado a la derecha */
+    }
+    100% {
+        background-position: 0 bottom; /* Termina en posición original */
+    }
+}
+
+.logo {
+    width: 200px;
+    height: auto;
+    position: relative;
+    z-index: 5;
+}
+
+.subtitle {
+    font-family: 'PoppinsLight', sans-serif;
+    text-align: center;
+    font-size: 1em;
+    margin: 0.25em;
+    line-height: 1.25em;
+    position: relative;
+    z-index: 5;
+}
+
+.micro-subtitle {
+    font-family: 'PoppinsLight', sans-serif;
+    text-align: center;
+    font-size: 0.75em;
+    margin: 0;
+    line-height: 1em;
+    position: relative;
+    z-index: 5;
+}
+
+.title-login, .title-password {
+    font-family: 'PoppinsLight', sans-serif;
+    text-align: center;
+    font-size: 1em;
+    margin: 0;
+    line-height: 1em;
+}
+
+.form-login {
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+.button-conecte-se, .button-user {
+    margin-top: 0.5em;
+}
+
+/* -------------------------------------------------- */
+/* ESTILOS PARA EL CAMIÓN CON RUEDAS GIRATORIAS */
+/* -------------------------------------------------- */
+
+.truck-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 130px; /* MARGEN ORIGINAL */
+    width: 100%;
+    z-index: 4;
+}
+
+/* VIBRACIÓN SUAVE EN EL WRAPPER DEL CAMIÓN */
+.truck-wrapper {
+    position: relative;
+    display: inline-block;
+    animation: vibrar-suave 0.3s infinite;
+    z-index: 2;
+}
+
+.truck {
+    max-width: 300px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Contenedor de las ruedas */
+.wheel {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 3;
+}
+
+/* Posición de la rueda trasera - AJUSTAR SEGÚN IMAGEN */
+.wheel-back {
+    top: 119px;
+    left: 40px;
+}
+
+/* Posición de la rueda delantera - AJUSTAR SEGÚN IMAGEN */
+.wheel-front {
+    top: 119px;
+    right: 30px;
+}
+
+/* Imagen de la rueda con animación */
+.wheel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: rotateWheel 0.5s linear infinite;
+    transform-origin: center center;
+}
+
+/* -------------------------------------------------- */
+/* ANIMACIONES */
+/* -------------------------------------------------- */
+
+/* Animación de rotación continua para ruedas */
+@keyframes rotateWheel {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* VIBRACIÓN SUAVE - ahora aplicada al wrapper */
+@keyframes vibrar-suave {
+    0%, 100% { 
+        transform: translate(0, 0); 
+    }
+    50% { 
+        transform: translate(1px, 1px); 
+    }
+}
+
+/* -------------------------------------------------- */
+/* PISO - EN POSICIÓN ORIGINAL CON EFECTO RÁPIDO */
+/* -------------------------------------------------- */
+
+.road {
+    position: absolute;
+    bottom: 0px; /* POSICIÓN ORIGINAL - al fondo */
+    width: 100%;
+    height: 100px;
+    background-color: #242424;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1; /* Debajo del camión */
+    overflow: hidden;
+}
+
+/* Línea blanca discontinua en el centro - CON EFECTO DE MOVIMIENTO RÁPIDO */
+.road::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 10px,
+        white 10px,
+        white 20px,
+        transparent 20px,
+        transparent 30px
+    );
+    background-size: 30px 100%;
+    transform: translateY(-50%);
+    animation: moveLines 0.2s linear infinite;
+}
+
+/* Animación para mover el patrón de fondo - RÁPIDO */
+@keyframes moveLines {
+    0% {
+        background-position: 30px 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+/* Ajustar posición de las ruedas */
+.wheel-back, .wheel-front {
+    bottom: 0; /* Las ruedas tocan exactamente el piso */
+}
+
+/* -------------------------------------------------- */
+/* RESPONSIVIDAD */
+/* -------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .mountains-parallax {
+        height: 200px;
+        bottom: 100px; /* Misma posición relativa */
+        animation: parallaxMountainsReverse 80s linear infinite; /* Aún más lento */
+    }
+    
+    .truck-container {
+        margin-top: 200px; /* Ajustado para responsividad */
+    }
+    
+    .truck-wrapper {
+        animation: vibrar-suave 0.4s infinite;
+    }
+    
+    .truck {
+        max-width: 250px;
+    }
+    
+    .wheel {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .wheel-back {
+        top: 100px;
+        left: 35px;
+    }
+    
+    .wheel-front {
+        top: 100px;
+        right: 30px;
+    }
+    
+    .road::after {
+        animation: moveLines 0.25s linear infinite;
+    }
+}
+
+@media (max-width: 480px) {
+    .mountains-parallax {
+        height: 150px;
+        bottom: 100px; /* Misma posición relativa */
+        animation: parallaxMountainsReverse 100s linear infinite; /* Muy lento */
+    }
+    
+    .truck-container {
+        margin-top: 150px; /* Ajustado para responsividad */
+    }
+    
+    .truck-wrapper {
+        animation: vibrar-suave 0.5s infinite;
+    }
+    
+    .truck {
+        max-width: 200px;
+    }
+    
+    .wheel {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .wheel-back {
+        top: 80px;
+        left: 30px;
+    }
+    
+    .wheel-front {
+        top: 80px;
+        right: 25px;
+    }
+    
+    .road::after {
+        animation: moveLines 0.3s linear infinite;
+    }
+}
+
+/* -------------------------------------------------- */
+/* CLASE DE ERROR */
+/* -------------------------------------------------- */
+
+.error {
+    color: #ff4444;
+    font-family: 'PoppinsLight', sans-serif;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9em;
+    padding: 8px 15px;
+    background-color: rgba(255, 68, 68, 0.1);
+    border-radius: 5px;
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    position: relative;
+    z-index: 5;
+}
