@@ -1,4 +1,4 @@
 <?php
-$contrasena = "ProdFeb10**";
+$contrasena = "12345";
 echo password_hash($contrasena, PASSWORD_DEFAULT);
 ?>

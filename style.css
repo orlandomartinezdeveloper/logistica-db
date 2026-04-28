@@ -1,199 +1,227 @@
+/* ==============================
+   FUENTES POPPINS
+============================== */
 @font-face {
-    font-family: 'PoppinsLight';
-    src: url('fonts/Poppins-Light.woff2') format('woff2');
-    font-weight: lighter;
-    font-style: normal;
+    font-family: 'PoppinsRegular';
+    src: url('fonts/Poppins-Regular.woff') format('woff');
+    font-weight: 400;
 }
 
-body {
+@font-face {
+    font-family: 'PoppinsSemiBold';
+    src: url('fonts/Poppins-SemiBold.woff') format('woff');
+    font-weight: 600;
+}
+
+/* ==============================
+   RESET GENERAL
+============================== */
+* {
     margin: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #87CEEB, #B0E2FF);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: sans-serif;
-    overflow-x: hidden;
-    position: relative;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* -------------------------------------------------- */
-/* FONDO CON MONTAÑAS - EFECTO PARALLAX INVERSO Y LENTO */
-/* -------------------------------------------------- */
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
 
+/* ==============================
+   BODY
+============================== */
+body {
+    font-family: 'PoppinsRegular', sans-serif;
+    background: linear-gradient(to bottom, #87CEEB, #B0E2FF);
+}
+
+/* ==============================
+   ESCENA
+============================== */
+.scene {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+}
+
+/* ==============================
+   MONTAÑAS
+============================== */
 .mountains-parallax {
     position: absolute;
-    bottom: 100px; /* Misma posición que antes */
+    bottom: 100px;
     left: 0;
     width: 100%;
-    height: 300px;
-    background-image: url('img/montanhas.png');
-    background-repeat: repeat-x;
+    height: 280px;
+    background: url('img/montanhas.png') repeat-x bottom;
     background-size: auto 100%;
-    background-position: 0 bottom;
-    z-index: 0; /* Detrás de todo */
-    opacity: 0.85; /* Ligera transparencia */
-    
-    /* EFECTO PARALLAX INVERSO (de izquierda a derecha) y MÁS LENTO */
-    animation: parallaxMountainsReverse 60s linear infinite; /* 60s = muy lento */
+    animation: parallax 60s linear infinite;
+    z-index: 1;
 }
 
-/* Animación parallax inversa (de izquierda a derecha) */
-@keyframes parallaxMountainsReverse {
-    0% {
-        background-position: 1000px bottom; /* Empieza desplazado a la derecha */
-    }
-    100% {
-        background-position: 0 bottom; /* Termina en posición original */
-    }
+@keyframes parallax {
+    from { background-position: 0 bottom; }
+    to   { background-position: -1000px bottom; }
 }
 
-.logo {
-    width: 200px;
-    height: auto;
+/* ==============================
+   CONTENEDOR LOGIN (CARD)
+============================== */
+.content {
     position: relative;
     z-index: 5;
+    width: 90%;
+    max-width: 320px;
+    margin: 200px auto 0;
+
+    background: #e6c08a; /* marrón claro */
+    padding: 22px 20px;
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* ==============================
+   LOGO Y TEXTOS
+============================== */
+.logo {
+    width: 180px;
+    margin-bottom: 10px;
 }
 
 .subtitle {
-    font-family: 'PoppinsLight', sans-serif;
-    text-align: center;
+    font-family: 'PoppinsSemiBold', sans-serif;
     font-size: 1em;
-    margin: 0.25em;
-    line-height: 1.25em;
-    position: relative;
-    z-index: 5;
+    line-height: 1.3em;
+    margin-bottom: 5px;
+    color: #2b2b2b;
 }
 
 .micro-subtitle {
-    font-family: 'PoppinsLight', sans-serif;
-    text-align: center;
     font-size: 0.75em;
-    margin: 0;
-    line-height: 1em;
-    position: relative;
-    z-index: 5;
+    margin-bottom: 15px;
+    color: #4a4a4a;
 }
 
-.title-login, .title-password {
-    font-family: 'PoppinsLight', sans-serif;
-    text-align: center;
-    font-size: 1em;
-    margin: 0;
-    line-height: 1em;
-}
-
+/* ==============================
+   FORMULARIO
+============================== */
 .form-login {
-    text-align: center;
-    position: relative;
-    z-index: 5;
-}
-
-.button-conecte-se, .button-user {
-    margin-top: 0.5em;
-}
-
-/* -------------------------------------------------- */
-/* ESTILOS PARA EL CAMIÓN CON RUEDAS GIRATORIAS */
-/* -------------------------------------------------- */
-
-.truck-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 130px; /* MARGEN ORIGINAL */
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-user,
+.button-password {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: none;
+    font-family: 'PoppinsRegular', sans-serif;
+}
+
+.button-conecte-se {
+    width: 100%;
+    padding: 10px;
+    background: #242424;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-family: 'PoppinsSemiBold', sans-serif; /* 👈 CLAVE */
+    font-size: 0.9em;
+    font-weight: 600;
+}
+.button-conecte-se:hover {
+    background: #2b9152;
+    transition: 0.3s ease;
+}
+
+
+/* ==============================
+   ERROR
+============================== */
+.error {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 0.8em;
+    color: #b00020;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+}
+
+/* ==============================
+   CAMIÓN
+============================== */
+.truck-container {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 4;
 }
 
-/* VIBRACIÓN SUAVE EN EL WRAPPER DEL CAMIÓN */
 .truck-wrapper {
     position: relative;
-    display: inline-block;
-    animation: vibrar-suave 0.3s infinite;
-    z-index: 2;
+    animation: vibrar 0.3s infinite;
 }
 
 .truck {
     max-width: 300px;
-    height: auto;
     display: block;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-/* Contenedor de las ruedas */
+/* ==============================
+   RUEDAS
+============================== */
 .wheel {
     position: absolute;
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    overflow: hidden;
-    z-index: 3;
+    top: 120px;
 }
 
-/* Posición de la rueda trasera - AJUSTAR SEGÚN IMAGEN */
-.wheel-back {
-    top: 119px;
-    left: 40px;
-}
+.wheel-back { left: 45px; }
+.wheel-front { right: 40px; }
 
-/* Posición de la rueda delantera - AJUSTAR SEGÚN IMAGEN */
-.wheel-front {
-    top: 119px;
-    right: 30px;
-}
-
-/* Imagen de la rueda con animación */
 .wheel-img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    animation: rotateWheel 0.5s linear infinite;
-    transform-origin: center center;
+    animation: girar 0.5s linear infinite;
 }
 
-/* -------------------------------------------------- */
-/* ANIMACIONES */
-/* -------------------------------------------------- */
-
-/* Animación de rotación continua para ruedas */
-@keyframes rotateWheel {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+@keyframes girar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* VIBRACIÓN SUAVE - ahora aplicada al wrapper */
-@keyframes vibrar-suave {
-    0%, 100% { 
-        transform: translate(0, 0); 
-    }
-    50% { 
-        transform: translate(1px, 1px); 
-    }
+@keyframes vibrar {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(1px,1px); }
 }
 
-/* -------------------------------------------------- */
-/* PISO - EN POSICIÓN ORIGINAL CON EFECTO RÁPIDO */
-/* -------------------------------------------------- */
-
+/* ==============================
+   CARRETERA
+============================== */
 .road {
     position: absolute;
-    bottom: 0px; /* POSICIÓN ORIGINAL - al fondo */
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100px;
-    background-color: #242424;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    z-index: 1; /* Debajo del camión */
-    overflow: hidden;
+    background: #242424;
+    z-index: 3;
 }
 
-/* Línea blanca discontinua en el centro - CON EFECTO DE MOVIMIENTO RÁPIDO */
 .road::after {
     content: '';
     position: absolute;
@@ -203,129 +231,107 @@ body {
     height: 2px;
     background: repeating-linear-gradient(
         90deg,
-        transparent 0px,
+        transparent 0,
         transparent 10px,
-        white 10px,
-        white 20px,
-        transparent 20px,
-        transparent 30px
+        #fff 10px,
+        #fff 20px
     );
-    background-size: 30px 100%;
-    transform: translateY(-50%);
-    animation: moveLines 0.2s linear infinite;
+    animation: linea 0.1s linear infinite;
 }
 
-/* Animación para mover el patrón de fondo - RÁPIDO */
-@keyframes moveLines {
-    0% {
-        background-position: 30px 0;
-    }
-    100% {
-        background-position: 0 0;
-    }
+@keyframes linea {
+    from { background-position: 0 0; }
+    to { background-position: -30px 0; }
 }
 
-/* Ajustar posición de las ruedas */
-.wheel-back, .wheel-front {
-    bottom: 0; /* Las ruedas tocan exactamente el piso */
-}
-
-/* -------------------------------------------------- */
-/* RESPONSIVIDAD */
-/* -------------------------------------------------- */
-
-@media (max-width: 768px) {
-    .mountains-parallax {
-        height: 200px;
-        bottom: 100px; /* Misma posición relativa */
-        animation: parallaxMountainsReverse 80s linear infinite; /* Aún más lento */
-    }
-    
-    .truck-container {
-        margin-top: 200px; /* Ajustado para responsividad */
-    }
-    
-    .truck-wrapper {
-        animation: vibrar-suave 0.4s infinite;
-    }
-    
-    .truck {
-        max-width: 250px;
-    }
-    
-    .wheel {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .wheel-back {
-        top: 100px;
-        left: 35px;
-    }
-    
-    .wheel-front {
-        top: 100px;
-        right: 30px;
-    }
-    
-    .road::after {
-        animation: moveLines 0.25s linear infinite;
-    }
-}
-
+/* ==============================
+   RESPONSIVE
+============================== */
 @media (max-width: 480px) {
-    .mountains-parallax {
-        height: 150px;
-        bottom: 100px; /* Misma posición relativa */
-        animation: parallaxMountainsReverse 100s linear infinite; /* Muy lento */
+    .content {
+    margin: 35px auto 0;
     }
-    
-    .truck-container {
-        margin-top: 150px; /* Ajustado para responsividad */
-    }
-    
-    .truck-wrapper {
-        animation: vibrar-suave 0.5s infinite;
-    }
-    
-    .truck {
-        max-width: 200px;
-    }
-    
+    .truck { max-width: 200px; }
     .wheel {
         width: 40px;
         height: 40px;
-    }
-    
-    .wheel-back {
         top: 80px;
-        left: 30px;
     }
-    
-    .wheel-front {
-        top: 80px;
-        right: 25px;
-    }
-    
-    .road::after {
-        animation: moveLines 0.3s linear infinite;
-    }
+    .wheel-back { left: 27px; }
+    .wheel-front { right: 22px; }
 }
 
-/* -------------------------------------------------- */
-/* CLASE DE ERROR */
-/* -------------------------------------------------- */
+/* ==============================
+   LOADER PANTALLA NEGRA
+============================== */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-.error {
-    color: #ff4444;
-    font-family: 'PoppinsLight', sans-serif;
+.loader-content {
     text-align: center;
-    margin-top: 15px;
-    font-size: 0.9em;
-    padding: 8px 15px;
-    background-color: rgba(255, 68, 68, 0.1);
-    border-radius: 5px;
-    border: 1px solid rgba(255, 68, 68, 0.3);
-    position: relative;
-    z-index: 5;
+    color: white;
+    font-family: 'PoppinsRegular', sans-serif;
+}
+
+/* Spinner */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Ocultar contenido hasta cargar */
+body.loading .scene {
+    display: none;
+}
+
+/* Pop Up Error de Login */
+.popup-error {
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #3d3d3db6;
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Animación opcional */
+.popup-error.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }

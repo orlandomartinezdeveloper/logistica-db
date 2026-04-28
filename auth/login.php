@@ -18,7 +18,7 @@ $email = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
 
 if (empty($email) || empty($password)) {
-    header("Location: index.php?error=1");
+    header("Location: ../index.php?error=1");
     exit();
 }
 
@@ -38,14 +38,14 @@ if ($result->num_rows === 1) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         
-        // Redirigir a test.html
-        header("Location: ../test.html");
+        // Redirigir a Dashboard
+        header("Location: ../dashboard/index.php");
         exit();
     }
 }
 
  // Si llega aquí: error de login
-header("Location: index.php?error=1");
+header("Location: ../index.php?error=1");
 exit();
 
 $stmt->close();

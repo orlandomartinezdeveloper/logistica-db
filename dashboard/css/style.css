@@ -1,0 +1,287 @@
+/* ==============================
+   FONTES
+============================== */
+@font-face {
+    font-family: 'PoppinsRegular';
+    src: url('../../fonts/Poppins-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'PoppinsSemiBold';
+    src: url('../../fonts/Poppins-SemiBold.woff') format('woff');
+}
+
+/* ==============================
+   RESET
+============================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ==============================
+   CORES
+============================== */
+:root {
+    --header-bg: #e6c08a;
+    --sidebar-bg: #242424;
+    --sidebar-text: #ffffff;
+    --content-bg: #87CEEB;
+    --text-title: #2b2b2b;
+    --text-muted: #4a4a4a;
+    --white: #ffffff;
+    --green: #2b9152;
+}
+
+/* ==============================
+   BODY
+============================== */
+body {
+    font-family: 'PoppinsRegular', sans-serif;
+    background: var(--white);
+    color: var(--text-title);
+    min-height: 100vh;
+}
+
+/* BLOQUEAR SCROLL CUANDO MENU ABIERTO */
+body.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ==============================
+   HEADER
+============================== */
+.header {
+    height: 64px;
+    background: var(--header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    height: 34px;
+}
+
+.title {
+    font-family: 'PoppinsSemiBold';
+    font-size: 15px;
+    line-height: 1.3;
+}
+
+.title small {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.2;
+}
+
+/* BOTÓN HAMBURGER */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--text-title);
+}
+
+/* ==============================
+   LAYOUT
+============================== */
+.layout {
+    display: flex;
+    height: calc(100vh - 64px);
+}
+
+/* ==============================
+   SIDEBAR
+============================== */
+.sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 14px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar nav a {
+    color: var(--sidebar-text);
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar nav a i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.sidebar nav a:hover {
+    background: var(--green);
+    color: var(--white);
+}
+
+.sidebar nav a.active {
+    background: var(--white);
+    color: var(--sidebar-bg);
+    font-family: 'PoppinsSemiBold';
+}
+
+/* BOTÓN PUBLICAR */
+.publish-btn {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: var(--white);
+    color: var(--sidebar-bg);
+    font-family: 'PoppinsSemiBold';
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.publish-btn:hover {
+    background: var(--green);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+/* ==============================
+   CONTENT
+============================== */
+.content {
+    flex: 1;
+    padding: 30px;
+    background: var(--content-bg);
+}
+
+.content h1 {
+    font-family: 'PoppinsSemiBold';
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.content p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* ==============================
+   CARDS
+============================== */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 20px;
+    border: 2px solid var(--green);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.card p {
+    font-family: 'PoppinsSemiBold';
+    font-size: 28px;
+    color: var(--text-title);
+}
+
+/* ==============================
+   OVERLAY
+============================== */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+    z-index: 9;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ==============================
+   RESPONSIVE MOBILE
+============================== */
+@media (max-width: 768px) {
+
+    /* HEADER */
+    .menu-toggle {
+        display: block;
+    }
+
+    .title {
+        font-size: 13px;
+        line-height: 1.2;
+    }
+
+    .title small {
+        font-size: 11px;
+        line-height: 1.1;
+        margin-top: 2px;
+    }
+
+    /* LAYOUT */
+    .layout {
+        height: auto;
+    }
+
+    /* SIDEBAR DRAWER */
+    .sidebar {
+        position: fixed;
+        top: 64px;
+        left: -260px;
+        height: calc(100vh - 64px);
+        z-index: 10;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* CONTENT */
+    .content {
+        padding: 20px;
+    }
+
+    /* CARDS EN COLUMNA */
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
