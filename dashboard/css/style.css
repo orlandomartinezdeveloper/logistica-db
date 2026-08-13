@@ -44,7 +44,6 @@ body {
     min-height: 100vh;
 }
 
-/* BLOQUEAR SCROLL CUANDO MENU ABIERTO */
 body.no-scroll {
     overflow: hidden;
     height: 100vh;
@@ -85,7 +84,6 @@ body.no-scroll {
     line-height: 1.2;
 }
 
-/* BOTÓN HAMBURGER */
 .menu-toggle {
     display: none;
     background: none;
@@ -149,7 +147,6 @@ body.no-scroll {
     font-family: 'PoppinsSemiBold';
 }
 
-/* BOTÓN PUBLICAR */
 .publish-btn {
     padding: 12px;
     border-radius: 10px;
@@ -174,6 +171,7 @@ body.no-scroll {
     flex: 1;
     padding: 30px;
     background: var(--content-bg);
+    overflow-y: auto;
 }
 
 .content h1 {
@@ -240,7 +238,6 @@ body.no-scroll {
 ============================== */
 @media (max-width: 768px) {
 
-    /* HEADER */
     .menu-toggle {
         display: block;
     }
@@ -256,12 +253,10 @@ body.no-scroll {
         margin-top: 2px;
     }
 
-    /* LAYOUT */
     .layout {
         height: auto;
     }
 
-    /* SIDEBAR DRAWER */
     .sidebar {
         position: fixed;
         top: 64px;
@@ -275,13 +270,209 @@ body.no-scroll {
         left: 0;
     }
 
-    /* CONTENT */
     .content {
         padding: 20px;
     }
 
-    /* CARDS EN COLUMNA */
     .cards {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   REGISTRO DE USUARIOS
+============================================ */
+
+/* Título del registro (sobrescribe el h1 base del .content cuando hay form) */
+.content h1 i {
+    color: #2c7da0;
+    margin-right: 12px;
+}
+
+/* Formulario */
+.register-form {
+    max-width: 600px;
+    margin-top: 30px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.form-group label i {
+    margin-right: 8px;
+    color: #2c7da0;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #2c7da0;
+    box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 6px;
+    color: #7f8c8d;
+    font-size: 12px;
+}
+
+/* Botón enviar */
+.btn-submit {
+    background: linear-gradient(135deg, #2c7da0 0%, #1f5e7a 100%);
+    color: white;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 125, 160, 0.3);
+    background: linear-gradient(135deg, #1f5e7a 0%, #164a60 100%);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-submit i {
+    margin-right: 8px;
+}
+
+/* Alertas */
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Placeholders */
+::placeholder {
+    color: #bbb;
+    font-size: 13px;
+}
+
+/* Campos inválidos */
+.form-group input:invalid:focus {
+    border-color: #dc3545;
+}
+
+/* Checkbox */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-check input {
+    width: auto;
+}
+
+/* Separador */
+.form-divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.form-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+.form-divider span {
+    background: #fff;
+    padding: 0 15px;
+    position: relative;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+/* Responsive registro */
+@media (max-width: 768px) {
+    .register-form {
+        padding: 20px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px 12px;
+    }
+
+    .btn-submit {
+        padding: 12px 20px;
+    }
+
+    .content h1 {
+        font-size: 24px;
     }
 }

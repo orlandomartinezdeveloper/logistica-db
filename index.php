@@ -26,13 +26,15 @@
             <h1 class="subtitle">
                 Sistema Inteligente de<br>Gestão de Frotas
             </h1>
-
-            <div class="micro-subtitle">Version Beta 0.5</div>
-
+            <div class="mark-subtitle">
+                <div class="sub-subtitle">Login</div>
+                <div class="micro-subtitle">Version Beta 0.5</div>
+            </div>
             <form action="auth/login.php" method="POST" class="form-login">
                 <input class="button-user" type="email" name="email" placeholder="Usuário (e-mail)" required>
                 <input class="button-password" type="password" name="password" placeholder="Senha" required>
                 <button class="button-conecte-se" type="submit">Conecte-se</button>
+                <a href="auth/forgot.php" class="button-conecte-se">Esqueceu sua senha?</a>
             </form>
             <?php if (isset($_GET['error'])): ?>
                 <p class="error">E-mail ou senha incorretos</p>

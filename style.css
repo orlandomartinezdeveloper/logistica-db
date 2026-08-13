@@ -6,7 +6,6 @@
     src: url('fonts/Poppins-Regular.woff') format('woff');
     font-weight: 400;
 }
-
 @font-face {
     font-family: 'PoppinsSemiBold';
     src: url('fonts/Poppins-SemiBold.woff') format('woff');
@@ -14,22 +13,15 @@
 }
 
 /* ==============================
-   RESET GENERAL
+   RESET
 ============================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
     height: 100%;
     overflow: hidden;
 }
 
-/* ==============================
-   BODY
-============================== */
 body {
     font-family: 'PoppinsRegular', sans-serif;
     background: linear-gradient(to bottom, #87CEEB, #B0E2FF);
@@ -59,24 +51,26 @@ body {
     animation: parallax 60s linear infinite;
     z-index: 1;
 }
-
 @keyframes parallax {
     from { background-position: 0 bottom; }
     to   { background-position: -1000px bottom; }
 }
 
 /* ==============================
-   CONTENEDOR LOGIN (CARD)
+   LOGIN (CARD) — DEFAULT (móvil/tablet)
+   Login arriba centrado, camión abajo
 ============================== */
 .content {
-    position: relative;
+    position: absolute;
     z-index: 5;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 90%;
     max-width: 320px;
-    margin: 200px auto 0;
 
-    background: #e6c08a; /* marrón claro */
-    padding: 22px 20px;
+    background: #e6c08a;
+    padding: 20px 20px;
     border-radius: 14px;
 
     display: flex;
@@ -91,23 +85,28 @@ body {
    LOGO Y TEXTOS
 ============================== */
 .logo {
-    width: 180px;
+    width: 160px;
+    margin-bottom: 8px;
+}
+
+.mark-subtitle{
+    background-color: rgb(43, 145, 82);
+    width: 100%;
+    border-radius: 6px;
     margin-bottom: 10px;
+    padding: 7.5px;
 }
 
 .subtitle {
     font-family: 'PoppinsSemiBold', sans-serif;
     font-size: 1em;
     line-height: 1.3em;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: #2b2b2b;
 }
 
-.micro-subtitle {
-    font-size: 0.75em;
-    margin-bottom: 15px;
-    color: #4a4a4a;
-}
+.sub-subtitle { font-size: 1em; color: #fff; }
+.micro-subtitle { font-size: 0.75em; color: #fff; }
 
 /* ==============================
    FORMULARIO
@@ -137,15 +136,16 @@ body {
     border-radius: 6px;
     border: none;
     cursor: pointer;
-    font-family: 'PoppinsSemiBold', sans-serif; /* 👈 CLAVE */
+    font-family: 'PoppinsSemiBold', sans-serif;
     font-size: 0.9em;
     font-weight: 600;
+    margin-bottom: 10px !important;
+    text-decoration: none;
 }
 .button-conecte-se:hover {
     background: #2b9152;
     transition: 0.3s ease;
 }
-
 
 /* ==============================
    ERROR
@@ -160,7 +160,7 @@ body {
 }
 
 /* ==============================
-   CAMIÓN
+   CAMIÓN — DEFAULT (debajo del login)
 ============================== */
 .truck-container {
     position: absolute;
@@ -176,7 +176,7 @@ body {
 }
 
 .truck {
-    max-width: 300px;
+    max-width: 260px;
     display: block;
 }
 
@@ -185,13 +185,12 @@ body {
 ============================== */
 .wheel {
     position: absolute;
-    width: 60px;
-    height: 60px;
-    top: 120px;
+    width: 52px;
+    height: 52px;
+    top: 104px;
 }
-
-.wheel-back { left: 45px; }
-.wheel-front { right: 40px; }
+.wheel-back { left: 38px; }
+.wheel-front { right: 32px; }
 
 .wheel-img {
     width: 100%;
@@ -203,7 +202,6 @@ body {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
-
 @keyframes vibrar {
     0%,100% { transform: translate(0,0); }
     50% { transform: translate(1px,1px); }
@@ -221,7 +219,6 @@ body {
     background: #242424;
     z-index: 3;
 }
-
 .road::after {
     content: '';
     position: absolute;
@@ -238,31 +235,124 @@ body {
     );
     animation: linea 0.1s linear infinite;
 }
-
 @keyframes linea {
     from { background-position: 0 0; }
     to { background-position: -30px 0; }
 }
 
 /* ==============================
-   RESPONSIVE
+   MÓVIL PEQUEÑO
 ============================== */
 @media (max-width: 480px) {
     .content {
-    margin: 35px auto 0;
+        top: 15px;
+        max-width: 300px;
+        padding: 16px 16px;
     }
-    .truck { max-width: 200px; }
+    .logo { width: 140px; margin-bottom: 6px; }
+    .subtitle { font-size: 0.9em; margin-bottom: 6px; }
+    .mark-subtitle { padding: 6px; margin-bottom: 8px; }
+    .button-user,
+    .button-password,
+    .button-conecte-se { padding: 8px; margin-bottom: 8px; }
+
+    .truck { max-width: 180px; }
     .wheel {
-        width: 40px;
-        height: 40px;
-        top: 80px;
+        width: 36px;
+        height: 36px;
+        top: 72px;
     }
-    .wheel-back { left: 27px; }
-    .wheel-front { right: 22px; }
+    .wheel-back  { left: 24px; }
+    .wheel-front { right: 20px; }
+
+    .truck-container { bottom: 100px; }
 }
 
 /* ==============================
-   LOADER PANTALLA NEGRA
+   MÓVIL MUY BAJITO (landscape pequeño)
+============================== */
+@media (max-width: 768px) and (max-height: 600px) {
+    .content {
+        top: 10px;
+        max-width: 260px;
+        padding: 12px 14px;
+    }
+    .logo { width: 110px; margin-bottom: 4px; }
+    .subtitle { font-size: 0.8em; }
+    .truck { max-width: 150px; }
+    .wheel { width: 30px; height: 30px; top: 60px; }
+    .wheel-back  { left: 20px; }
+    .wheel-front { right: 16px; }
+}
+
+/* ==============================
+   LAPTOPS (≈1366x768)
+   Login a la derecha, camión a la izquierda
+============================== */
+@media (min-width: 769px) and (max-height: 800px) {
+
+    .content {
+        top: 50%;
+        right: 22%;
+        left: auto;
+        transform: translateY(-50%);
+        margin: 0;
+        width: 320px;
+        max-width: 320px;
+    }
+
+    .truck-container {
+        left: 22%;
+        bottom: 100px;
+        transform: none;
+    }
+
+    .truck { max-width: 280px; }
+
+    .wheel {
+        width: 55px;
+        height: 55px;
+        top: 112px;
+    }
+    .wheel-back  { left: 42px; }
+    .wheel-front { right: 37px; }
+}
+
+/* ==============================
+   PANTALLAS GRANDES (desktop alto >800px)
+   Login a la derecha, camión a la izquierda con más aire
+============================== */
+@media (min-width: 1024px) and (min-height: 801px) {
+
+    .content {
+        top: 50%;
+        right: 18%;
+        left: auto;
+        transform: translateY(-50%);
+        margin: 0;
+        width: 340px;
+        max-width: 340px;
+    }
+
+    .truck-container {
+        left: 18%;
+        bottom: 100px;
+        transform: none;
+    }
+
+    .truck { max-width: 320px; }
+
+    .wheel {
+        width: 62px;
+        height: 62px;
+        top: 128px;
+    }
+    .wheel-back  { left: 48px; }
+    .wheel-front { right: 42px; }
+}
+
+/* ==============================
+   LOADER
 ============================== */
 #loader {
     position: fixed;
@@ -274,14 +364,11 @@ body {
     align-items: center;
     justify-content: center;
 }
-
 .loader-content {
     text-align: center;
     color: white;
     font-family: 'PoppinsRegular', sans-serif;
 }
-
-/* Spinner */
 .spinner {
     width: 50px;
     height: 50px;
@@ -291,47 +378,35 @@ body {
     animation: spin 1s linear infinite;
     margin: 0 auto 15px;
 }
-
 @keyframes spin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
 }
+body.loading .scene { display: none; }
 
-/* Ocultar contenido hasta cargar */
-body.loading .scene {
-    display: none;
-}
-
-/* Pop Up Error de Login */
+/* ==============================
+   POPUP ERROR
+============================== */
 .popup-error {
-  display: none;
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #3d3d3db6;
-  color: #fff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-  font-size: 16px;
-  text-align: center;
-}
-
-/* Animación opcional */
-.popup-error.show {
-  display: block;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -55%);
-  }
-  to {
-    opacity: 1;
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
     transform: translate(-50%, -50%);
-  }
+    background: #3d3d3db6;
+    color: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    font-size: 16px;
+    text-align: center;
+}
+.popup-error.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -55%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
 }

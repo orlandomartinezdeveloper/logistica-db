@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+// Obtener el nombre del usuario de la sesión
+$user_name = $_SESSION['user_name'] ?? 'Usuário';
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -46,8 +58,7 @@
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Status das Tarefas</a>
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
-                <a href="#"><i class="fa-solid fa-user-plus"></i> Registrar Usuário</a>
-                <a href="#"><i class="fa-solid fa-users"></i> Pessoal Cadastrado</a>
+                <a href="#"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
@@ -60,7 +71,10 @@
 
         <!-- CONTENT -->
         <main class="content">
-            <h1>Bem-vindo ao Sistema Inteligente de Gestão de Frotas da Calebito</h1>
+            <h1>
+                ¡Bem-vindo, <?php echo htmlspecialchars($user_name); ?>!
+                <small>Sistema Inteligente de Gestão de Frotas da Calebito</small>
+            </h1>
 
             <p>
                 Esta plataforma foi desenvolvida para otimizar a gestão de frotas e a logística da empresa,
