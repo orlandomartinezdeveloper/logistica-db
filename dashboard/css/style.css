@@ -557,3 +557,208 @@ body.no-scroll {
 @media (max-width: 768px) {
     .action-buttons { grid-template-columns: 1fr; gap: 14px; }
 }
+
+/* ==============================
+   CONSULTA DE USUÁRIOS
+============================== */
+
+/* Barra de busca */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 24px;
+    max-width: 600px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #2c7da0;
+    box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+}
+
+.search-bar button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #2c7da0 0%, #1f5e7a 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.search-bar button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 125, 160, 0.3);
+}
+
+.search-bar button i {
+    margin-right: 6px;
+}
+
+/* Informação de resultados */
+.results-info {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.results-info strong {
+    color: var(--text-title);
+}
+
+/* Tabela de usuários */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.users-table thead {
+    background: var(--sidebar-bg);
+    color: var(--white);
+}
+
+.users-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-family: 'PoppinsSemiBold';
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.users-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.users-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.users-table tbody tr:hover {
+    background: #f7f9fb;
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Foto do usuário na tabela */
+.user-photo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+}
+
+.user-photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 50px;
+}
+
+/* Foto atual na página de edição */
+.current-photo {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.current-photo img {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.current-photo small {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.user-photo-large {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+}
+
+/* Badge de status */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-ativo {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inativo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Badge de função */
+.role-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #e2e3f1;
+    color: #383d6e;
+}
+
+/* Mensagem de resultados vazios */
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.no-results i {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+    color: #ccc;
+}
+
+/* Responsivo consulta de usuários */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .users-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

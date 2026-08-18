@@ -206,28 +206,101 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     }
 
     // Pasta onde serão armazenadas as fotos
-    $uploadDir = __DIR__ . "/uploads/users/";
+    $uploadDir = __DIR__ . "/../img/users/";
 
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
     // Gerar nome único
-    $newName = uniqid("user_", true) . "." . $extension;
+    $newName = uniqid("user_", true) . ".jpg";
 
     $destination = $uploadDir . $newName;
 
-    // Mover arquivo
-    if (!move_uploaded_file($_FILES['photo']['tmp_name'], $destination)) {
+    /*
+    |--------------------------------------------------------------------------
+    | REDIMENSIONAR E COMPRESSOR DE IMAGEM
+    |--------------------------------------------------------------------------
+    | Redimensiona para 1000x1000, converte para JPG e comprime
+    | para reduzir o tamanho do arquivo.
+    */
 
+    $targetWidth = 1000;
+    $targetHeight = 1000;
+    $jpegQuality = 75;
+
+    // Criar imagem a partir do arquivo enviado
+    switch ($imageInfo['mime']) {
+        case 'image/jpeg':
+            $sourceImage = imagecreatefromjpeg($_FILES['photo']['tmp_name']);
+            break;
+        case 'image/png':
+            $sourceImage = imagecreatefrompng($_FILES['photo']['tmp_name']);
+            break;
+        case 'image/webp':
+            $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
+            break;
+        default:
+            header("Location: register.php?error=invalid_image");
+            exit();
+    }
+
+    if (!$sourceImage) {
         header("Location: register.php?error=upload_error");
-
         exit();
+    }
 
+    // Criar nova imagem redimensionada
+    $resizedImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+    // Preservar transparência para PNG
+    if ($imageInfo['mime'] === 'image/png') {
+        imagealphablending($resizedImage, false);
+        imagesavealpha($resizedImage, true);
+        $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+        imagefilledrectangle($resizedImage, 0, 0, $targetWidth, $targetHeight, $transparent);
+    }
+
+    // Redimensionar mantendo proporção (crop centrado)
+    $origWidth = imagesx($sourceImage);
+    $origHeight = imagesy($sourceImage);
+
+    $ratioOrig = $origWidth / $origHeight;
+    $ratioTarget = $targetWidth / $targetHeight;
+
+    if ($ratioOrig > $ratioTarget) {
+        $newHeight = $origHeight;
+        $newWidth = (int)($origHeight * $ratioTarget);
+        $srcX = (int)(($origWidth - $newWidth) / 2);
+        $srcY = 0;
+    } else {
+        $newWidth = $origWidth;
+        $newHeight = (int)($origWidth / $ratioTarget);
+        $srcX = 0;
+        $srcY = (int)(($origHeight - $newHeight) / 2);
+    }
+
+    imagecopyresampled(
+        $resizedImage, $sourceImage,
+        0, 0, $srcX, $srcY,
+        $targetWidth, $targetHeight,
+        $newWidth, $newHeight
+    );
+
+    // Salvar como JPG comprimido
+    $saved = imagejpeg($resizedImage, $destination, $jpegQuality);
+
+    // Liberar memória
+    imagedestroy($sourceImage);
+    imagedestroy($resizedImage);
+
+    if (!$saved) {
+        header("Location: register.php?error=upload_error");
+        exit();
     }
 
     // Caminho que será salvo no banco
-    $photo_url = "uploads/users/" . $newName;
+    $photo_url = "img/users/" . $newName;
 }
 
 /*
