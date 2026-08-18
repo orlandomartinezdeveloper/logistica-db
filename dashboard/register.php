@@ -97,7 +97,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Status das Tarefas</a>
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
-                <a href="#"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a class="active" href="users.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
@@ -177,7 +177,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                 <div class="form-group">
                     <label for="photo">
                         <i class="fa-solid fa-image"></i>
-                        Foto <small>(opcional)</small>:
+                        Foto:
                     </label>
 
                     <input

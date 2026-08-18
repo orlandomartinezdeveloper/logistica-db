@@ -52,13 +52,13 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <nav>
-                <a class="active" href="#"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="index.php"><i class="fa-solid fa-house"></i> Início</a>
                 <a href="#"><i class="fa-solid fa-inbox"></i> Caixa de Entrada</a>
                 <a href="#"><i class="fa-solid fa-calendar-days"></i> Calendário</a>
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Status das Tarefas</a>
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
-                <a href="users.php"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a class="active" href="users.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
@@ -72,41 +72,47 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
         <!-- CONTENT -->
         <main class="content">
             <h1>
-                ¡Bem-vindo, <?php echo htmlspecialchars($user_name); ?>!
-                <small>Sistema Inteligente de Gestão de Frotas da Calebito</small>
+                <i class="fa-solid fa-user-plus"></i>
+                Gerenciamento de Usuários
             </h1>
+            <p>Selecione uma ação para gerenciar os usuários do sistema.</p>
 
-            <p>
-                Esta plataforma foi desenvolvida para otimizar a gestão de frotas e a logística da empresa,
-                organizando os processos de envio de pedidos para franqueados e lojas próprias.
-                Auxilia motoristas e gerência no cumprimento dos objetivos operacionais.
-            </p>
+            <div class="action-buttons">
+                <a href="register.php" class="action-btn btn-create">
+                    <span class="action-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span class="action-text">
+                        <strong>Cadastrar</strong>
+                        <small>Adicionar novo usuário</small>
+                    </span>
+                </a>
 
-            <div class="cards">
-                <div class="card">
-                    <h3>Tarefas Ativas</h3>
-                    <p>12</p>
-                </div>
+                <a href="users_consultar.php" class="action-btn btn-search">
+                    <span class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <span class="action-text">
+                        <strong>Consultar</strong>
+                        <small>Buscar e visualizar</small>
+                    </span>
+                </a>
 
-                <div class="card">
-                    <h3>Motoristas</h3>
-                    <p>8</p>
-                </div>
+                <a href="users_editar.php" class="action-btn btn-edit">
+                    <span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+                    <span class="action-text">
+                        <strong>Editar</strong>
+                        <small>Atualizar dados</small>
+                    </span>
+                </a>
 
-                <div class="card">
-                    <h3>Veículos</h3>
-                    <p>15</p>
-                </div>
-
-                <div class="card">
-                    <h3>Relatórios</h3>
-                    <p>4</p>
-                </div>
+                <a href="users_excluir.php" class="action-btn btn-delete">
+                    <span class="action-icon"><i class="fa-solid fa-trash-can"></i></span>
+                    <span class="action-text">
+                        <strong>Excluir</strong>
+                        <small>Remover usuário</small>
+                    </span>
+                </a>
             </div>
         </main>
 
     </div>
-
     <!-- JS -->
     <script src="js/menu.js"></script>
 </body>
