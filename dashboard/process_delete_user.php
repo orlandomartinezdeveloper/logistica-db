@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
 */
 
 define('ACCESS_ALLOWED', true);
-require __DIR__ . '/../config.php';
+require '/home/calebito/config.php';
 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
