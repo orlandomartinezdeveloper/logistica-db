@@ -41,23 +41,23 @@ $successMessage = null;
 $errorMessage = null;
 
 if (isset($_GET['success'])) {
-    $successMessage = match ($_GET['success']) {
-        'updated'        => 'Usuário atualizado com sucesso!',
-        'registered'     => 'Usuário cadastrado com sucesso!',
-        'status_changed' => 'Status do usuário alterado com sucesso!',
-        'deactivated'    => 'Usuário desligado com sucesso!',
-        'deleted'        => 'Usuário removido permanentemente do sistema.',
-        default          => 'Operação realizada com sucesso.',
-    };
+    switch ($_GET['success']) {
+        case 'updated':        $successMessage = 'Usuário atualizado com sucesso!'; break;
+        case 'registered':     $successMessage = 'Usuário cadastrado com sucesso!'; break;
+        case 'status_changed': $successMessage = 'Status do usuário alterado com sucesso!'; break;
+        case 'deactivated':    $successMessage = 'Usuário desligado com sucesso!'; break;
+        case 'deleted':        $successMessage = 'Usuário removido permanentemente do sistema.'; break;
+        default:               $successMessage = 'Operação realizada com sucesso.'; break;
+    }
 }
 
 if (isset($_GET['error'])) {
-    $errorMessage = match ($_GET['error']) {
-        'user_not_found' => 'Usuário não encontrado.',
-        'self_delete'    => 'Você não pode excluir seu próprio usuário.',
-        'server_error'   => 'Erro no servidor. Tente novamente.',
-        default          => 'Ocorreu um erro. Tente novamente.',
-    };
+    switch ($_GET['error']) {
+        case 'user_not_found': $errorMessage = 'Usuário não encontrado.'; break;
+        case 'self_delete':    $errorMessage = 'Você não pode excluir seu próprio usuário.'; break;
+        case 'server_error':   $errorMessage = 'Erro no servidor. Tente novamente.'; break;
+        default:               $errorMessage = 'Ocorreu um erro. Tente novamente.'; break;
+    }
 }
 
 /*
