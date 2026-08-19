@@ -4,6 +4,18 @@
 
 **Todo el código, interfaces, textos visibles al usuario, mensajes, labels, botones, alertas, placeholders, y cualquier contenido textual del proyecto DEBE estar en Portugués Brasileiro (pt-BR).** El usuario se comunica en español, pero el producto final es para el mercado brasileño. Siempre traducir todo al portugués brasileño al escribir o modificar archivos del proyecto.
 
+## REGLA IMPORTANTE: Versión de PHP
+
+**El hosting HostGator ejecuta PHP 7.x. NUNCA usar sintaxis o funciones de PHP 8.0+.** Esto incluye:
+- **NO usar `match`** → usar `switch` en su lugar
+- **NO usar `enum`** → usar constants o arrays asociativos
+- **NO usar named arguments** → usar argumentos posicionales
+- **NO usar `str_contains`, `str_starts_with`, `str_ends_with`** → usar `strpos`, `substr`
+- **NO usar null safe operator `?->`** → usar `isset()` con `->`
+- **NO usar fibas (Fibers)** → usar generators o callbacks
+
+Siempre verificar la compatibilidad antes de escribir código PHP.
+
 ## REGLA IMPORTANTE: CSS del Dashboard
 
 **NUNCA colocar código CSS inline dentro de archivos PHP del dashboard (ni en `<style>` dentro de los PHP).** Todo el CSS del dashboard DEBE estar en el archivo `dashboard/css/style.css`. Al crear o modificar estilos, siempre agregarlos al final de `style.css` y referenciarlo desde el PHP con `<link rel="stylesheet" href="css/style.css">`.
