@@ -32,11 +32,11 @@ if (empty($email) || empty($password)) {
     exit();
 }
 
-// Buscar usuario
+// Buscar usuario (por e-mail ou username)
 $stmt = $conn->prepare("
     SELECT id, name, password_hash 
     FROM users 
-    WHERE email = ? OR name = ?
+    WHERE email = ? OR username = ?
 ");
 
 $stmt->bind_param("ss", $email, $email);

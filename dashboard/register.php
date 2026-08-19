@@ -31,7 +31,11 @@ $errorMessages = [
     'db_connection'      => 'Erro de conexão com o banco de dados. Tente novamente.',
     'name_required'       => 'O campo Nome é obrigatório.',
     'lastname_required'   => 'O campo Sobrenome é obrigatório.',
+    'username_required'   => 'O campo Nome de Usuário é obrigatório.',
+    'username_invalid'    => 'O nome de usuário deve conter apenas letras minúsculas, números, pontos, hífens ou underscores.',
+    'username_exists'     => 'Este nome de usuário já está em uso. Escolha outro.',
     'email_required'      => 'O campo E-mail é obrigatório.',
+    'email_exists'        => 'Este e-mail já está cadastrado para outro usuário.',
     'birth_day_required'  => 'O campo Data de Nascimento é obrigatório.',
     'phone_required'      => 'O campo Telefone é obrigatório.',
     'address_required'    => 'O campo Endereço é obrigatório.',
@@ -157,6 +161,24 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         placeholder="Digite o nome">
                 </div>
 
+                <!-- Nome de Usuário -->
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fa-solid fa-at"></i>
+                        Nome de Usuário:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        required
+                        value="<?= old('username', $old) ?>"
+                        placeholder="Ex: joao.silva"
+                        class="lowercase-input">
+                    <small>Letras minúsculas, sem espaços. Será usado para login.</small>
+                </div>
+
                 <!-- Sobrenome -->
                 <div class="form-group">
                     <label for="lastname">
@@ -238,6 +260,23 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         placeholder="(22) 99999-9999">
                 </div>
 
+                <!-- CEP -->
+                <div class="form-group">
+                    <label for="cep">
+                        <i class="fa-solid fa-map-pin"></i>
+                        CEP:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cep"
+                        name="cep"
+                        maxlength="9"
+                        value="<?= old('cep', $old) ?>"
+                        placeholder="00000-000">
+                    <small>Digite o CEP para preencher o endereço automaticamente.</small>
+                </div>
+
                 <!-- Endereço -->
                 <div class="form-group">
                     <label for="address">
@@ -251,7 +290,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         name="address"
                         required
                         value="<?= old('address', $old) ?>"
-                        placeholder="Digite o endereço">
+                        placeholder="Preenchido automaticamente pelo CEP">
                 </div>
 
                 <!-- CNH -->
@@ -339,6 +378,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
 
     <!-- JS -->
     <script src="js/menu.js"></script>
+    <script src="js/mask.js"></script>
 
 </body>
 </html>

@@ -254,6 +254,7 @@ body.no-scroll {
     }
 
     .layout {
+        min-height: calc(100vh - 64px);
         height: auto;
     }
 
@@ -271,11 +272,37 @@ body.no-scroll {
     }
 
     .content {
-        padding: 20px;
+        padding: 20px 16px;
+    }
+
+    .content h1 {
+        font-size: 18px;
     }
 
     .cards {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0 12px;
+    }
+
+    .title small {
+        display: none;
+    }
+
+    .content {
+        padding: 16px 12px;
+    }
+
+    .content h1 {
+        font-size: 16px;
+    }
+
+    .content p {
+        font-size: 13px;
     }
 }
 
@@ -461,19 +488,49 @@ body.no-scroll {
 @media (max-width: 768px) {
     .register-form {
         padding: 20px;
+        max-width: 100%;
     }
 
     .form-group input,
     .form-group select {
         padding: 10px 12px;
+        font-size: 13px;
     }
 
     .btn-submit {
         padding: 12px 20px;
+        font-size: 14px;
     }
 
     .content h1 {
-        font-size: 24px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-form {
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .btn-submit {
+        padding: 11px 16px;
+        font-size: 13px;
     }
 }
 /* ==============================
@@ -556,6 +613,15 @@ body.no-scroll {
 
 @media (max-width: 768px) {
     .action-buttons { grid-template-columns: 1fr; gap: 14px; }
+    .action-text strong { font-size: 14px; }
+    .action-text small { font-size: 11px; }
+}
+
+@media (max-width: 480px) {
+    .action-buttons { gap: 12px; margin-top: 16px; }
+    .action-btn { padding: 14px 16px; gap: 12px; }
+    .action-icon { width: 40px; height: 40px; font-size: 18px; }
+    .action-text strong { font-size: 13px; }
 }
 
 /* ==============================
@@ -670,6 +736,12 @@ body.no-scroll {
     border: 2px solid #e0e0e0;
 }
 
+/* Foto em escala de cinza para usuários desligados */
+.photo-desligado {
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
 .user-photo-placeholder {
     width: 150px;
     height: 150px;
@@ -707,6 +779,13 @@ body.no-scroll {
     border: 2px solid #e0e0e0;
 }
 
+@media (max-width: 480px) {
+    .user-photo-large {
+        width: 100px;
+        height: 100px;
+    }
+}
+
 /* Badge de status */
 .status-badge {
     display: inline-block;
@@ -721,7 +800,12 @@ body.no-scroll {
     color: #155724;
 }
 
-.status-inativo {
+.status-ferias {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-desligado {
     background: #f8d7da;
     color: #721c24;
 }
@@ -751,14 +835,729 @@ body.no-scroll {
     color: #ccc;
 }
 
-/* Responsivo consulta de usuários */
-@media (max-width: 768px) {
+/* Responsivo consulta de usuários — ocultamento progressivo SEM scroll horizontal */
+
+/* Colunas: 1=Foto 2=Nome 3=Sobrenome 4=E-mail 5=Telefone 6=Função 7=Status 8=Ações */
+
+/* ≤ 1024px: ocultar E-mail, Telefone e Sobrenome + botões só ícone + fotos menores */
+@media (max-width: 1024px) {
+    .users-table th:nth-child(4),
+    .users-table td:nth-child(4) {
+        display: none;
+    }
+
+    .users-table th:nth-child(5),
+    .users-table td:nth-child(5) {
+        display: none;
+    }
+
+    .users-table th:nth-child(3),
+    .users-table td:nth-child(3) {
+        display: none;
+    }
+
+    .btn-label {
+        display: none;
+    }
+
+    .btn-table {
+        padding: 6px 7px;
+        gap: 0;
+        min-width: 28px;
+        min-height: 28px;
+        justify-content: center;
+    }
+
+    .btn-table i {
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .user-photo,
+    .user-photo-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+
+    .user-photo-placeholder {
+        font-size: 40px;
+    }
+}
+
+/* ≤ 900px: ocultar Status */
+@media (max-width: 900px) {
+    .users-table th:nth-child(7),
+    .users-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+/* ≤ 800px: compactar tabela */
+@media (max-width: 800px) {
+    .users-table td,
+    .users-table th {
+        padding: 8px 8px;
+    }
+
+    .user-photo,
+    .user-photo-placeholder {
+        width: 50px;
+        height: 50px;
+    }
+
+    .user-photo-placeholder {
+        font-size: 20px;
+    }
+}
+
+/* ≤ 700px: ocultar Função */
+@media (max-width: 700px) {
+    .users-table th:nth-child(6),
+    .users-table td:nth-child(6) {
+        display: none;
+    }
+
     .search-bar {
         flex-direction: column;
     }
 
-    .users-table {
-        display: block;
-        overflow-x: auto;
+    .search-bar button {
+        width: 100%;
+    }
+
+    .status-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+
+    .results-info {
+        font-size: 12px;
+    }
+
+    .btn-action-group {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+}
+
+/* ≤ 400px: compactar ao máximo */
+@media (max-width: 400px) {
+    .users-table td {
+        padding: 5px 4px;
+        font-size: 11px;
+    }
+
+    .users-table th {
+        padding: 5px 4px;
+        font-size: 9px;
+    }
+
+    .users-table th:first-child,
+    .users-table td:first-child {
+        padding-left: 10px;
+    }
+
+    .status-badge {
+        font-size: 8px;
+        padding: 2px 4px;
+    }
+
+    .user-photo,
+    .user-photo-placeholder {
+        width: 36px;
+        height: 36px;
+    }
+
+    .user-photo-placeholder {
+        font-size: 14px;
+    }
+
+    .btn-table {
+        min-width: 24px;
+        min-height: 24px;
+        padding: 3px 4px;
+    }
+
+    .btn-table i {
+        font-size: 10px;
+    }
+}
+
+/* ==============================
+   BOTÕES DE AÇÃO NA TABELA
+============================== */
+.btn-action-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.btn-table {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-table:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Botão Editar */
+.btn-table-edit {
+    background: #d99a2b;
+}
+
+.btn-table-edit:hover {
+    background: #c08a20;
+}
+
+/* Botão Excluir */
+.btn-table-delete {
+    background: #c0392b;
+}
+
+.btn-table-delete:hover {
+    background: #a93226;
+}
+
+/* Botão Status */
+.btn-table-status {
+    background: #2c7da0;
+}
+
+.btn-table-status:hover {
+    background: #1f5e7a;
+}
+
+/* Botão Consultar */
+.btn-table.btn-table-consult {
+    background: #2b9152 !important;
+    color: #fff !important;
+}
+
+.btn-table.btn-table-consult:hover {
+    background: #228b47 !important;
+}
+
+/* Botão desabilitado (próprio usuário) */
+.btn-table-delete:disabled,
+.btn-table-disabled {
+    background: #bbb;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ==============================
+   MODAIS DE CONFIRMAÇÃO
+============================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+.modal-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 36px 32px 28px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #f8d7da;
+    color: #c0392b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 28px;
+}
+
+/* Ícone de confirmação (verde) */
+.modal-icon-confirm {
+    background: #d4edda;
+    color: #28a745;
+}
+
+.modal-box h2 {
+    font-family: 'PoppinsSemiBold';
+    font-size: 18px;
+    color: #2b2b2b;
+    margin-bottom: 8px;
+}
+
+.modal-box p.modal-user-name {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.modal-box p.modal-desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 26px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-size: 14px;
+    text-align: left;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.modal-btn .btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.modal-btn .btn-info strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.modal-btn .btn-info small {
+    display: block;
+    font-size: 12px;
+    color: #888;
+}
+
+/* Botão Desligar no modal */
+.modal-btn-deactivate .btn-icon { background: #d99a2b; }
+.modal-btn-deactivate:hover { border-color: #d99a2b; }
+
+/* Botão Excluir no modal */
+.modal-btn-delete .btn-icon { background: #c0392b; }
+.modal-btn-delete:hover { border-color: #c0392b; }
+
+/* Botão Cancelar no modal */
+.modal-btn-cancel .btn-icon { background: #6c757d; }
+.modal-btn-cancel:hover { border-color: #6c757d; }
+
+/* Botão Confirmar no modal */
+.modal-btn-confirm .btn-icon { background: #2c7da0; }
+.modal-btn-confirm:hover { border-color: #2c7da0; }
+
+/* Botão Sim (confirmar - verde) */
+.modal-btn-confirm .btn-icon { background: #28a745; }
+.modal-btn-confirm:hover { border-color: #28a745; }
+
+/* ==============================
+   MODAL DE MUDANÇA DE STATUS
+============================== */
+.modal-status-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.modal-status-select:focus {
+    outline: none;
+    border-color: #2c7da0;
+    box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+}
+
+/* ==============================
+   ANIMAÇÕES DOS MODAIS
+============================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ==============================
+   MODAL DE CONSULTA - INFORMAÇÕES DO USUÁRIO
+============================== */
+.modal-box-consulta {
+    max-width: 560px;
+    text-align: left;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.08);
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.modal-close-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+    color: #333;
+}
+
+/* CABEÇALHO DO MODAL */
+.consulta-header {
+    text-align: center;
+    padding: 20px 32px 16px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.consulta-photo-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 12px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.consulta-photo {
+    width: 160px;
+    height: 160px;
+    min-width: 160px;
+    min-height: 160px;
+    max-width: 160px;
+    max-height: 160px;
+    border-radius: 50% !important;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: block;
+}
+
+.consulta-photo-placeholder {
+    width: 160px;
+    height: 160px;
+    min-width: 160px;
+    min-height: 160px;
+    max-width: 160px;
+    max-height: 160px;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #d99a2b, #c08a20);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.consulta-status-dot {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.consulta-header h2 {
+    font-family: 'PoppinsSemiBold';
+    font-size: 17px;
+    color: #2b2b2b;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.consulta-role-badge {
+    display: inline-block;
+    background: #2c7da0;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 20px;
+}
+
+/* CONTEÚDO SCROLLÁVEL */
+.consulta-body {
+    overflow-y: auto;
+    flex: 1;
+    padding-bottom: 16px;
+}
+
+/* SEÇÕES DE INFORMAÇÕES */
+.consulta-section {
+    padding: 14px 28px 0;
+}
+
+.consulta-section h3 {
+    font-family: 'PoppinsSemiBold';
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.consulta-section h3 i {
+    font-size: 11px;
+    color: #d99a2b;
+}
+
+.consulta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+}
+
+.consulta-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.consulta-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.consulta-field label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 1px;
+}
+
+.consulta-field span {
+    font-size: 13px;
+    color: #333;
+    word-break: break-word;
+}
+
+/* BOTÕES DO MODAL DE CONSULTA */
+.consulta-actions {
+    padding: 14px 28px 18px;
+    border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.consulta-actions .modal-btn {
+    flex: 1;
+}
+
+.consulta-actions .modal-btn .btn-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+}
+
+.consulta-actions .modal-btn .btn-info strong {
+    font-size: 13px;
+}
+
+.consulta-actions .modal-btn .btn-info small {
+    font-size: 11px;
+}
+
+/* ==============================
+   RESPONSIVO BOTÕES E MODAIS
+============================== */
+@media (max-width: 768px) {
+    .btn-action-group {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .modal-box {
+        padding: 24px 20px 20px;
+        margin: 10px;
+        border-radius: 12px;
+    }
+    .modal-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+    .modal-box h2 {
+        font-size: 16px;
+    }
+    .modal-btn {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    .modal-btn .btn-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    .modal-btn .btn-info strong {
+        font-size: 13px;
+    }
+    .modal-btn .btn-info small {
+        font-size: 11px;
+    }
+    .modal-box-consulta {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    .consulta-photo-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+    .consulta-photo {
+        width: 120px;
+        height: 120px;
+        min-width: 120px;
+        min-height: 120px;
+        max-width: 120px;
+        max-height: 120px;
+    }
+    .consulta-photo-placeholder {
+        width: 120px;
+        height: 120px;
+        min-width: 120px;
+        min-height: 120px;
+        max-width: 120px;
+        max-height: 120px;
+        font-size: 44px;
+    }
+    .consulta-header {
+        padding: 16px 20px 12px;
+    }
+    .consulta-header h2 {
+        font-size: 15px;
+    }
+    .consulta-section {
+        padding: 10px 16px 0;
+    }
+    .consulta-grid {
+        grid-template-columns: 1fr;
+        gap: 6px 12px;
+    }
+    .consulta-actions {
+        padding: 10px 16px 14px;
+        flex-direction: column;
+    }
+    .consulta-actions .modal-btn {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-box {
+        padding: 20px 16px 16px;
+        margin: 8px;
+    }
+    .consulta-photo-wrapper {
+        width: 100px;
+        height: 100px;
+    }
+    .consulta-photo {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        min-height: 100px;
+        max-width: 100px;
+        max-height: 100px;
+    }
+    .consulta-photo-placeholder {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        min-height: 100px;
+        max-width: 100px;
+        max-height: 100px;
+        font-size: 36px;
+    }
+    .consulta-header h2 {
+        font-size: 14px;
+    }
+    .consulta-section h3 {
+        font-size: 11px;
+    }
+    .consulta-field span {
+        font-size: 12px;
     }
 }

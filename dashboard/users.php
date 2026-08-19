@@ -1,13 +1,24 @@
 <?php
 session_start();
 
-// Verificar si el usuario ha iniciado sesión
+/*
+|--------------------------------------------------------------------------
+| VERIFICAR SESSÃO
+|--------------------------------------------------------------------------
+| Redireciona para o login caso o usuário não esteja autenticado.
+*/
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../index.php");
     exit();
 }
 
-// Obtener el nombre del usuario de la sesión
+/*
+|--------------------------------------------------------------------------
+| DADOS DA SESSÃO
+|--------------------------------------------------------------------------
+*/
+
 $user_name = $_SESSION['user_name'] ?? 'Usuário';
 ?>
 <!DOCTYPE html>
@@ -26,7 +37,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
 </head>
 <body>
 
-    <!-- HEADER -->
+    <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
             <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
@@ -37,19 +48,19 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             </div>
         </div>
 
-        <!-- BOTÓN MENU MOBILE -->
+        <!-- BOTÃO MENU MOBILE -->
         <button class="menu-toggle" id="menuToggle">
             <i class="fa-solid fa-bars"></i>
         </button>
     </header>
 
-    <!-- OVERLAY -->
+    <!-- OVERLAY DO MENU MOBILE -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- MAIN LAYOUT -->
+    <!-- LAYOUT PRINCIPAL -->
     <div class="layout">
 
-        <!-- SIDEBAR -->
+        <!-- BARRA LATERAL -->
         <aside class="sidebar">
             <nav>
                 <a href="index.php"><i class="fa-solid fa-house"></i> Início</a>
@@ -69,7 +80,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             </button>
         </aside>
 
-        <!-- CONTENT -->
+        <!-- CONTEÚDO PRINCIPAL -->
         <main class="content">
             <h1>
                 <i class="fa-solid fa-user-plus"></i>
@@ -77,7 +88,9 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             </h1>
             <p>Selecione uma ação para gerenciar os usuários do sistema.</p>
 
+            <!-- BOTÕES DE AÇÃO -->
             <div class="action-buttons">
+                <!-- Botão: Cadastrar novo usuário -->
                 <a href="register.php" class="action-btn btn-create">
                     <span class="action-icon"><i class="fa-solid fa-user-plus"></i></span>
                     <span class="action-text">
@@ -86,34 +99,20 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                     </span>
                 </a>
 
+                <!-- Botão: Consultar, editar e excluir usuários -->
                 <a href="users_consultar.php" class="action-btn btn-search">
                     <span class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                     <span class="action-text">
                         <strong>Consultar</strong>
-                        <small>Buscar e visualizar</small>
-                    </span>
-                </a>
-
-                <a href="users_editar.php" class="action-btn btn-edit">
-                    <span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></span>
-                    <span class="action-text">
-                        <strong>Editar</strong>
-                        <small>Atualizar dados</small>
-                    </span>
-                </a>
-
-                <a href="users_excluir.php" class="action-btn btn-delete">
-                    <span class="action-icon"><i class="fa-solid fa-trash-can"></i></span>
-                    <span class="action-text">
-                        <strong>Excluir</strong>
-                        <small>Remover usuário</small>
+                        <small>Buscar, editar e remover</small>
                     </span>
                 </a>
             </div>
         </main>
 
     </div>
-    <!-- JS -->
+
+    <!-- SCRIPTS -->
     <script src="js/menu.js"></script>
 </body>
 </html>

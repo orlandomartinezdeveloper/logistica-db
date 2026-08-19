@@ -5,6 +5,7 @@ session_start();
 |--------------------------------------------------------------------------
 | VERIFICAR SESSÃO
 |--------------------------------------------------------------------------
+| Redireciona para o login caso o usuário não esteja autenticado.
 */
 
 if (!isset($_SESSION['user_id'])) {
@@ -39,6 +40,9 @@ $errorMessages = [
     'db_connection'      => 'Erro de conexão com o banco de dados. Tente novamente.',
     'name_required'      => 'O campo Nome é obrigatório.',
     'lastname_required'  => 'O campo Sobrenome é obrigatório.',
+    'username_required'  => 'O campo Nome de Usuário é obrigatório.',
+    'username_invalid'   => 'O nome de usuário deve conter apenas letras minúsculas, números, pontos, hífens ou underscores.',
+    'username_exists'    => 'Este nome de usuário já está em uso. Escolha outro.',
     'email_required'     => 'O campo E-mail é obrigatório.',
     'email_exists'       => 'Este e-mail já está cadastrado para outro usuário.',
     'birth_day_required' => 'O campo Data de Nascimento é obrigatório.',
@@ -54,7 +58,6 @@ $errorMessages = [
 ];
 
 $errorMessage = null;
-$successMessage = null;
 
 if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
     $errorMessage = $errorMessages[$_GET['error']];
@@ -62,29 +65,35 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
     $errorMessage = 'Erro ao atualizar usuário. Tente novamente.';
 }
 
-if (isset($_GET['success'])) {
-    $successMessage = 'Usuário atualizado com sucesso!';
-}
-
 /*
 |--------------------------------------------------------------------------
-| CARREGAR DADOS DO USUÁRIO (se ID foi informado)
+| CARREGAR DADOS DO USUÁRIO
 |--------------------------------------------------------------------------
+| O ID do usuário é obrigatório via parâmetro GET.
+| Caso não seja informado ou o usuário não exista, redireciona para a consulta.
 */
 
 $userId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$user = null;
 
-if ($userId > 0) {
-    $stmt = $conn->prepare("
-        SELECT id, name, lastname, email, birth_day, phone, address, cnh, role, photo_url, status
-        FROM users
-        WHERE id = ?
-    ");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+if ($userId <= 0) {
+    header("Location: users_consultar.php");
+    exit();
+}
+
+$stmt = $conn->prepare("
+    SELECT id, name, lastname, username, email, birth_day, phone, cep, address, cnh, role, photo_url, status
+    FROM users
+    WHERE id = ?
+");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
+
+if (!$user) {
+    header("Location: users_consultar.php?error=user_not_found");
+    exit();
 }
 
 $user_name = $_SESSION['user_name'] ?? 'Usuário';
@@ -104,7 +113,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
 </head>
 <body>
 
-    <!-- HEADER -->
+    <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
             <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
@@ -119,11 +128,13 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
         </button>
     </header>
 
+    <!-- OVERLAY DO MENU MOBILE -->
     <div class="overlay" id="overlay"></div>
 
+    <!-- LAYOUT PRINCIPAL -->
     <div class="layout">
 
-        <!-- SIDEBAR -->
+        <!-- BARRA LATERAL -->
         <aside class="sidebar">
             <nav>
                 <a href="index.php"><i class="fa-solid fa-house"></i> Início</a>
@@ -143,7 +154,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             </button>
         </aside>
 
-        <!-- MAIN CONTENT -->
+        <!-- CONTEÚDO PRINCIPAL -->
         <main class="content">
 
             <!-- TÍTULO -->
@@ -152,14 +163,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 Editar Usuário
             </h1>
 
-            <!-- MENSAGENS -->
-            <?php if ($successMessage): ?>
-                <div class="alert alert-success">
-                    <i class="fa-solid fa-check-circle"></i>
-                    <?= htmlspecialchars($successMessage) ?>
-                </div>
-            <?php endif; ?>
-
+            <!-- MENSAGENS DE ERRO -->
             <?php if ($errorMessage): ?>
                 <div class="alert alert-error">
                     <i class="fa-solid fa-exclamation-triangle"></i>
@@ -167,267 +171,334 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 </div>
             <?php endif; ?>
 
-            <!-- SELECIONAR USUÁRIO (se nenhum ID informado ou não encontrado) -->
-            <?php if (!$user): ?>
-                <p>Selecione um usuário para editar:</p>
+            <p>Editando: <strong><?php echo htmlspecialchars($user['name'] . ' ' . $user['lastname']); ?></strong></p>
 
-                <?php
-                $allUsers = $conn->query("SELECT id, name, lastname, email FROM users ORDER BY name ASC")->fetch_all(MYSQLI_ASSOC);
-                ?>
-
-                <?php if (count($allUsers) > 0): ?>
-                    <table class="users-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Sobrenome</th>
-                                <th>E-mail</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($allUsers as $u): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($u['name']); ?></td>
-                                    <td><?php echo htmlspecialchars($u['lastname']); ?></td>
-                                    <td><?php echo htmlspecialchars($u['email']); ?></td>
-                                    <td>
-                                        <a href="users_editar.php?id=<?php echo $u['id']; ?>" class="action-btn btn-edit" style="padding: 8px 14px; font-size: 13px;">
-                                            <span class="action-icon" style="width: 32px; height: 32px; font-size: 14px;">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </span>
-                                            <span class="action-text">
-                                                <strong>Editar</strong>
-                                            </span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <div class="no-results">
-                        <i class="fa-solid fa-user-slash"></i>
-                        Nenhum usuário cadastrado.
-                    </div>
-                <?php endif; ?>
+            <!-- FOTO ATUAL DO USUÁRIO -->
+            <?php if (!empty($user['photo_url'])): ?>
+                <div class="current-photo">
+                    <img
+                        src="../<?php echo htmlspecialchars($user['photo_url']); ?>"
+                        alt="<?php echo htmlspecialchars($user['name']); ?>"
+                        class="user-photo-large">
+                    <small>Foto atual</small>
+                </div>
+            <?php endif; ?>
 
             <!-- FORMULÁRIO DE EDIÇÃO -->
-            <?php else: ?>
-                <p>Editando: <strong><?php echo htmlspecialchars($user['name'] . ' ' . $user['lastname']); ?></strong></p>
+            <form
+                id="formEditar"
+                action="process_edit_user.php"
+                method="POST"
+                enctype="multipart/form-data"
+                class="register-form">
 
-                <!-- FOTO ATUAL -->
-                <?php if (!empty($user['photo_url'])): ?>
-                    <div class="current-photo">
-                        <img
-                            src="../<?php echo htmlspecialchars($user['photo_url']); ?>"
-                            alt="<?php echo htmlspecialchars($user['name']); ?>"
-                            class="user-photo-large">
-                        <small>Foto atual</small>
-                    </div>
-                <?php endif; ?>
+                <!-- ID oculto do usuário -->
+                <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
 
-                <form
-                    action="process_edit_user.php"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    class="register-form">
+                <!-- Nome -->
+                <div class="form-group">
+                    <label for="name">
+                        <i class="fa-solid fa-user"></i>
+                        Nome:
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        value="<?php echo htmlspecialchars($user['name']); ?>"
+                        placeholder="Digite o nome">
+                </div>
 
-                    <!-- ID oculto -->
-                    <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                <!-- Nome de Usuário -->
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fa-solid fa-at"></i>
+                        Nome de Usuário:
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        required
+                        value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>"
+                        placeholder="Ex: joao.silva"
+                        class="lowercase-input">
+                    <small>Letras minúsculas, sem espaços. Será usado para login.</small>
+                </div>
 
-                    <!-- Nome -->
-                    <div class="form-group">
-                        <label for="name">
-                            <i class="fa-solid fa-user"></i>
-                            Nome:
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            required
-                            value="<?php echo htmlspecialchars($user['name']); ?>"
-                            placeholder="Digite o nome">
-                    </div>
+                <!-- Sobrenome -->
+                <div class="form-group">
+                    <label for="lastname">
+                        <i class="fa-solid fa-user"></i>
+                        Sobrenome:
+                    </label>
+                    <input
+                        type="text"
+                        id="lastname"
+                        name="lastname"
+                        required
+                        value="<?php echo htmlspecialchars($user['lastname']); ?>"
+                        placeholder="Digite o sobrenome">
+                </div>
 
-                    <!-- Sobrenome -->
-                    <div class="form-group">
-                        <label for="lastname">
-                            <i class="fa-solid fa-user"></i>
-                            Sobrenome:
-                        </label>
-                        <input
-                            type="text"
-                            id="lastname"
-                            name="lastname"
-                            required
-                            value="<?php echo htmlspecialchars($user['lastname']); ?>"
-                            placeholder="Digite o sobrenome">
-                    </div>
+                <!-- Nova Foto -->
+                <div class="form-group">
+                    <label for="photo">
+                        <i class="fa-solid fa-image"></i>
+                        Nova Foto (opcional):
+                    </label>
+                    <input
+                        type="file"
+                        id="photo"
+                        name="photo"
+                        accept=".jpg,.jpeg,.png,.webp,image/*">
+                    <small>
+                        Formatos permitidos: JPG, JPEG, PNG e WEBP. Máximo 5MB. Deixe vazio para manter a foto atual.
+                    </small>
+                </div>
 
-                    <!-- Nova Foto -->
-                    <div class="form-group">
-                        <label for="photo">
-                            <i class="fa-solid fa-image"></i>
-                            Nova Foto (opcional):
-                        </label>
-                        <input
-                            type="file"
-                            id="photo"
-                            name="photo"
-                            accept=".jpg,.jpeg,.png,.webp,image/*">
-                        <small>
-                            Formatos permitidos: JPG, JPEG, PNG e WEBP. Máximo 5MB. Deixe vazio para manter a foto atual.
-                        </small>
-                    </div>
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fa-solid fa-envelope"></i>
+                        E-mail:
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        value="<?php echo htmlspecialchars($user['email']); ?>"
+                        placeholder="exemplo@email.com">
+                </div>
 
-                    <!-- Email -->
-                    <div class="form-group">
-                        <label for="email">
-                            <i class="fa-solid fa-envelope"></i>
-                            E-mail:
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            required
-                            value="<?php echo htmlspecialchars($user['email']); ?>"
-                            placeholder="exemplo@email.com">
-                    </div>
+                <!-- Data de nascimento -->
+                <div class="form-group">
+                    <label for="birth_day">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Data de Nascimento:
+                    </label>
+                    <input
+                        type="date"
+                        id="birth_day"
+                        name="birth_day"
+                        required
+                        value="<?php echo htmlspecialchars($user['birth_day']); ?>">
+                </div>
 
-                    <!-- Data de nascimento -->
-                    <div class="form-group">
-                        <label for="birth_day">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            Data de Nascimento:
-                        </label>
-                        <input
-                            type="date"
-                            id="birth_day"
-                            name="birth_day"
-                            required
-                            value="<?php echo htmlspecialchars($user['birth_day']); ?>">
-                    </div>
+                <!-- Telefone -->
+                <div class="form-group">
+                    <label for="phone">
+                        <i class="fa-solid fa-phone"></i>
+                        Telefone:
+                    </label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        required
+                        value="<?php echo htmlspecialchars($user['phone']); ?>"
+                        placeholder="(22) 99999-9999">
+                </div>
 
-                    <!-- Telefone -->
-                    <div class="form-group">
-                        <label for="phone">
-                            <i class="fa-solid fa-phone"></i>
-                            Telefone:
-                        </label>
-                        <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            required
-                            value="<?php echo htmlspecialchars($user['phone']); ?>"
-                            placeholder="(22) 99999-9999">
-                    </div>
+                <!-- CEP -->
+                <div class="form-group">
+                    <label for="cep">
+                        <i class="fa-solid fa-map-pin"></i>
+                        CEP:
+                    </label>
+                    <input
+                        type="text"
+                        id="cep"
+                        name="cep"
+                        maxlength="9"
+                        value="<?php echo htmlspecialchars($user['cep'] ?? ''); ?>"
+                        placeholder="00000-000">
+                    <small>Digite o CEP para preencher o endereço automaticamente.</small>
+                </div>
 
-                    <!-- Endereço -->
-                    <div class="form-group">
-                        <label for="address">
-                            <i class="fa-solid fa-location-dot"></i>
-                            Endereço:
-                        </label>
-                        <input
-                            type="text"
-                            id="address"
-                            name="address"
-                            required
-                            value="<?php echo htmlspecialchars($user['address']); ?>"
-                            placeholder="Digite o endereço">
-                    </div>
+                <!-- Endereço -->
+                <div class="form-group">
+                    <label for="address">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Endereço:
+                    </label>
+                    <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        required
+                        value="<?php echo htmlspecialchars($user['address']); ?>"
+                        placeholder="Preenchido automaticamente pelo CEP">
+                </div>
 
-                    <!-- CNH -->
-                    <div class="form-group">
-                        <label for="cnh">
-                            <i class="fa-solid fa-id-card"></i>
-                            CNH:
-                        </label>
-                        <?php $selectedCnh = $user['cnh']; ?>
-                        <select id="cnh" name="cnh" required>
-                            <option value="" disabled <?= $selectedCnh === '' ? 'selected' : '' ?>>Selecione a categoria</option>
-                            <option value="A" <?= $selectedCnh === 'A' ? 'selected' : '' ?>>A</option>
-                            <option value="B" <?= $selectedCnh === 'B' ? 'selected' : '' ?>>B</option>
-                            <option value="C" <?= $selectedCnh === 'C' ? 'selected' : '' ?>>C</option>
-                            <option value="D" <?= $selectedCnh === 'D' ? 'selected' : '' ?>>D</option>
-                            <option value="E" <?= $selectedCnh === 'E' ? 'selected' : '' ?>>E</option>
-                            <option value="nao_tenho" <?= $selectedCnh === 'nao_tenho' ? 'selected' : '' ?>>Não tenho</option>
-                        </select>
-                    </div>
+                <!-- CNH -->
+                <div class="form-group">
+                    <label for="cnh">
+                        <i class="fa-solid fa-id-card"></i>
+                        CNH:
+                    </label>
+                    <?php $selectedCnh = $user['cnh']; ?>
+                    <select id="cnh" name="cnh" required>
+                        <option value="" disabled <?= $selectedCnh === '' ? 'selected' : '' ?>>Selecione a categoria</option>
+                        <option value="A" <?= $selectedCnh === 'A' ? 'selected' : '' ?>>A</option>
+                        <option value="B" <?= $selectedCnh === 'B' ? 'selected' : '' ?>>B</option>
+                        <option value="C" <?= $selectedCnh === 'C' ? 'selected' : '' ?>>C</option>
+                        <option value="D" <?= $selectedCnh === 'D' ? 'selected' : '' ?>>D</option>
+                        <option value="E" <?= $selectedCnh === 'E' ? 'selected' : '' ?>>E</option>
+                        <option value="nao_tenho" <?= $selectedCnh === 'nao_tenho' ? 'selected' : '' ?>>Não tenho</option>
+                    </select>
+                </div>
 
-                    <!-- Tipo de Usuário -->
-                    <div class="form-group">
-                        <label for="role">
-                            <i class="fa-solid fa-badge"></i>
-                            Tipo de Usuário:
-                        </label>
-                        <?php $selectedRole = $user['role']; ?>
-                        <select id="role" name="role">
-                            <option value="motorista" <?= $selectedRole === 'motorista' ? 'selected' : '' ?>>🚛 Motorista</option>
-                            <option value="ajudante" <?= $selectedRole === 'ajudante' ? 'selected' : '' ?>>🛄 Ajudante</option>
-                            <option value="gestor_logistica" <?= $selectedRole === 'gestor_logistica' ? 'selected' : '' ?>>📊 Gestor de Logística</option>
-                            <option value="socio_proprietario" <?= $selectedRole === 'socio_proprietario' ? 'selected' : '' ?>>🏢 Sócio-Proprietário</option>
-                            <option value="lider_setor" <?= $selectedRole === 'lider_setor' ? 'selected' : '' ?>>👔 Líder de Setor</option>
-                            <option value="gerente_loja" <?= $selectedRole === 'gerente_loja' ? 'selected' : '' ?>>🏪 Gerente de Loja</option>
-                            <option value="sub_gerente" <?= $selectedRole === 'sub_gerente' ? 'selected' : '' ?>>📋 Sub-gerente</option>
-                            <option value="estoque" <?= $selectedRole === 'estoque' ? 'selected' : '' ?>>📦 Estoquista</option>
-                            <option value="gestor_eventos" <?= $selectedRole === 'gestor_eventos' ? 'selected' : '' ?>>🎪 Gestor de Eventos</option>
-                        </select>
-                    </div>
+                <!-- Tipo de Usuário -->
+                <div class="form-group">
+                    <label for="role">
+                        <i class="fa-solid fa-badge"></i>
+                        Tipo de Usuário:
+                    </label>
+                    <?php $selectedRole = $user['role']; ?>
+                    <select id="role" name="role">
+                        <option value="motorista" <?= $selectedRole === 'motorista' ? 'selected' : '' ?>>🚛 Motorista</option>
+                        <option value="ajudante" <?= $selectedRole === 'ajudante' ? 'selected' : '' ?>>🛄 Ajudante</option>
+                        <option value="gestor_logistica" <?= $selectedRole === 'gestor_logistica' ? 'selected' : '' ?>>📊 Gestor de Logística</option>
+                        <option value="socio_proprietario" <?= $selectedRole === 'socio_proprietario' ? 'selected' : '' ?>>🏢 Sócio-Proprietário</option>
+                        <option value="lider_setor" <?= $selectedRole === 'lider_setor' ? 'selected' : '' ?>>👔 Líder de Setor</option>
+                        <option value="gerente_loja" <?= $selectedRole === 'gerente_loja' ? 'selected' : '' ?>>🏪 Gerente de Loja</option>
+                        <option value="sub_gerente" <?= $selectedRole === 'sub_gerente' ? 'selected' : '' ?>>📋 Sub-gerente</option>
+                        <option value="estoque" <?= $selectedRole === 'estoque' ? 'selected' : '' ?>>📦 Estoquista</option>
+                        <option value="gestor_eventos" <?= $selectedRole === 'gestor_eventos' ? 'selected' : '' ?>>🎪 Gestor de Eventos</option>
+                    </select>
+                </div>
 
-                    <!-- Status -->
-                    <div class="form-group">
-                        <label for="status">
-                            <i class="fa-solid fa-toggle-on"></i>
-                            Status:
-                        </label>
-                        <select id="status" name="status">
-                            <option value="ativo" <?= $user['status'] === 'ativo' ? 'selected' : '' ?>>Ativo</option>
-                            <option value="inativo" <?= $user['status'] === 'inativo' ? 'selected' : '' ?>>Inativo</option>
-                        </select>
-                    </div>
+                <!-- Status -->
+                <div class="form-group">
+                    <label for="status">
+                        <i class="fa-solid fa-toggle-on"></i>
+                        Status:
+                    </label>
+                    <select id="status" name="status">
+                        <option value="ativo" <?= $user['status'] === 'ativo' ? 'selected' : '' ?>>Ativo</option>
+                        <option value="ferias" <?= $user['status'] === 'ferias' ? 'selected' : '' ?>>Férias</option>
+                        <option value="desligado" <?= $user['status'] === 'desligado' ? 'selected' : '' ?>>Desligado</option>
+                    </select>
+                </div>
 
-                    <!-- Senha (opcional na edição) -->
-                    <div class="form-divider"><span>Deixe vazio para manter a senha atual</span></div>
+                <!-- Senha (opcional na edição) -->
+                <div class="form-divider"><span>Deixe vazio para manter a senha atual</span></div>
 
-                    <div class="form-group">
-                        <label for="password">
-                            <i class="fa-solid fa-lock"></i>
-                            Nova Senha:
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Mínimo 6 caracteres">
-                        <small>🔒 Mínimo 6 caracteres. Só preencha quiser alterar.</small>
-                    </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fa-solid fa-lock"></i>
+                        Nova Senha:
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Mínimo 6 caracteres">
+                    <small>🔒 Mínimo 6 caracteres. Só preencha quiser alterar.</small>
+                </div>
 
-                    <!-- Botões -->
-                    <button type="submit" class="btn-submit">
-                        <i class="fa-solid fa-save"></i>
-                        Atualizar Usuário
-                    </button>
+                <!-- BOTÃO ATUALIZAR (abre modal de confirmação) -->
+                <button type="button" class="btn-submit" onclick="abrirModalConfirmar()">
+                    <i class="fa-solid fa-save"></i>
+                    Atualizar Usuário
+                </button>
 
-                    <a href="users_editar.php" class="btn-submit" style="text-align: center; text-decoration: none; margin-top: 10px; display: block; background: #6c757d;">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Voltar à Lista
-                    </a>
+                <!-- BOTÃO VOLTAR À LISTA -->
+                <a href="users_consultar.php" class="btn-submit" style="text-align: center; text-decoration: none; margin-top: 10px; display: block; background: #6c757d;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar à Lista
+                </a>
 
-                </form>
-            <?php endif; ?>
+            </form>
 
         </main>
 
     </div>
 
-    <!-- JS -->
-    <script src="js/menu.js"></script>
+    <!-- ==============================
+         MODAL DE CONFIRMAÇÃO - ATUALIZAR
+    ============================== -->
+    <div class="modal-overlay" id="modalConfirmar">
+        <div class="modal-box">
+            <!-- ÍCONE DE CONFIRMAÇÃO -->
+            <div class="modal-icon modal-icon-confirm">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h2>Tem certeza?</h2>
+            <p class="modal-user-name"><?php echo htmlspecialchars($user['name'] . ' ' . $user['lastname']); ?></p>
+            <p class="modal-desc">
+                Deseja salvar as alterações realizadas neste usuário?
+            </p>
 
+            <div class="modal-actions">
+                <!-- OPÇÃO: SIM, ATUALIZAR (submete o formulário) -->
+                <button type="button" class="modal-btn modal-btn-confirm" onclick="confirmarAtualizacao()">
+                    <span class="btn-icon"><i class="fa-solid fa-check"></i></span>
+                    <span class="btn-info">
+                        <strong>Sim, atualizar</strong>
+                        <small>Salvar todas as alterações realizadas</small>
+                    </span>
+                </button>
+
+                <!-- OPÇÃO: NÃO, CANCELAR (fecha o modal) -->
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="fecharModalConfirmar()">
+                    <span class="btn-icon"><i class="fa-solid fa-xmark"></i></span>
+                    <span class="btn-info">
+                        <strong>Não, cancelar</strong>
+                        <small>Manter os dados como estão</small>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/menu.js"></script>
+    <script src="js/mask.js"></script>
+    <script>
+        /*
+        |--------------------------------------------------------------------------
+        | MODAL DE CONFIRMAÇÃO - ATUALIZAR USUÁRIO
+        |--------------------------------------------------------------------------
+        | Abre o modal perguntando se o usuário tem certeza das alterações.
+        */
+        function abrirModalConfirmar() {
+            document.getElementById('modalConfirmar').classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+
+        /*
+        | Fecha o modal de confirmação e remove o bloqueio de scroll.
+        */
+        function fecharModalConfirmar() {
+            document.getElementById('modalConfirmar').classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+
+        /*
+        | Confirma a atualização: submete o formulário de edição.
+        */
+        function confirmarAtualizacao() {
+            document.getElementById('formEditar').submit();
+        }
+
+        /* Fecha o modal ao clicar fora da caixa de confirmação */
+        document.getElementById('modalConfirmar').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModalConfirmar();
+            }
+        });
+
+        /* Fecha o modal ao pressionar a tecla ESC */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                fecharModalConfirmar();
+            }
+        });
+    </script>
 </body>
 </html>
 

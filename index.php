@@ -31,7 +31,7 @@
                 <div class="micro-subtitle">Version Beta 0.5</div>
             </div>
             <form action="auth/login.php" method="POST" class="form-login">
-                <input class="button-user" type="email" name="email" placeholder="Usuário (e-mail)" required>
+                <input class="button-user" type="text" name="email" placeholder="E-mail ou nome de usuário" required>
                 <input class="button-password" type="password" name="password" placeholder="Senha" required>
                 <button class="button-conecte-se" type="submit">Conecte-se</button>
                 <a href="auth/forgot.php" class="button-conecte-se">Esqueceu sua senha?</a>

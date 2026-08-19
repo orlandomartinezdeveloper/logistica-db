@@ -40,9 +40,11 @@ $conn->set_charset(DB_CHARSET);
 $userId   = (int)($_POST['user_id'] ?? 0);
 $name     = trim($_POST['name'] ?? '');
 $lastname = trim($_POST['lastname'] ?? '');
+$username = strtolower(trim($_POST['username'] ?? ''));
 $email    = trim($_POST['email'] ?? '');
 $birthDay = trim($_POST['birth_day'] ?? '');
 $phone    = trim($_POST['phone'] ?? '');
+$cep      = trim($_POST['cep'] ?? '');
 $address  = trim($_POST['address'] ?? '');
 $cnh      = trim($_POST['cnh'] ?? '');
 $role     = trim($_POST['role'] ?? '');
@@ -62,6 +64,16 @@ if ($userId <= 0) {
 
 if (empty($name)) {
     header("Location: users_editar.php?id=$userId&error=name_required");
+    exit();
+}
+
+if (empty($username)) {
+    header("Location: users_editar.php?id=$userId&error=username_required");
+    exit();
+}
+
+if (!preg_match('/^[a-z0-9._-]+$/', $username)) {
+    header("Location: users_editar.php?id=$userId&error=username_invalid");
     exit();
 }
 
@@ -117,6 +129,24 @@ if ($check->num_rows > 0) {
     exit();
 }
 $check->close();
+
+/*
+|--------------------------------------------------------------------------
+| VERIFICAR USERNAME (excluindo o próprio usuário)
+|--------------------------------------------------------------------------
+*/
+
+$checkUser = $conn->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
+$checkUser->bind_param("si", $username, $userId);
+$checkUser->execute();
+$checkUser->store_result();
+
+if ($checkUser->num_rows > 0) {
+    $checkUser->close();
+    header("Location: users_editar.php?id=$userId&error=username_exists");
+    exit();
+}
+$checkUser->close();
 
 /*
 |--------------------------------------------------------------------------
@@ -262,30 +292,30 @@ if ($photo_url !== null) {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $conn->prepare("
             UPDATE users SET
-                name = ?, lastname = ?, email = ?, birth_day = ?,
-                phone = ?, address = ?, cnh = ?, role = ?,
+                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
                 status = ?, photo_url = ?, password_hash = ?
             WHERE id = ?
         ");
         $stmt->bind_param(
-            "sssssssssssi",
-            $name, $lastname, $email, $birthDay,
-            $phone, $address, $cnh, $role,
+            "sssssssssssssi",
+            $name, $lastname, $username, $email, $birthDay,
+            $phone, $cep, $address, $cnh, $role,
             $status, $photo_url, $password_hash, $userId
         );
     } else {
         // Sem senha nova
         $stmt = $conn->prepare("
             UPDATE users SET
-                name = ?, lastname = ?, email = ?, birth_day = ?,
-                phone = ?, address = ?, cnh = ?, role = ?,
+                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
                 status = ?, photo_url = ?
             WHERE id = ?
         ");
         $stmt->bind_param(
-            "ssssssssssi",
-            $name, $lastname, $email, $birthDay,
-            $phone, $address, $cnh, $role,
+            "ssssssssssssi",
+            $name, $lastname, $username, $email, $birthDay,
+            $phone, $cep, $address, $cnh, $role,
             $status, $photo_url, $userId
         );
     }
@@ -300,30 +330,30 @@ if ($photo_url !== null) {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $conn->prepare("
             UPDATE users SET
-                name = ?, lastname = ?, email = ?, birth_day = ?,
-                phone = ?, address = ?, cnh = ?, role = ?,
+                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
                 status = ?, password_hash = ?
             WHERE id = ?
         ");
         $stmt->bind_param(
-            "ssssssssssi",
-            $name, $lastname, $email, $birthDay,
-            $phone, $address, $cnh, $role,
+            "ssssssssssssi",
+            $name, $lastname, $username, $email, $birthDay,
+            $phone, $cep, $address, $cnh, $role,
             $status, $password_hash, $userId
         );
     } else {
         // Sem senha nova
         $stmt = $conn->prepare("
             UPDATE users SET
-                name = ?, lastname = ?, email = ?, birth_day = ?,
-                phone = ?, address = ?, cnh = ?, role = ?,
+                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
                 status = ?
             WHERE id = ?
         ");
         $stmt->bind_param(
-            "sssssssssi",
-            $name, $lastname, $email, $birthDay,
-            $phone, $address, $cnh, $role,
+            "sssssssssssi",
+            $name, $lastname, $username, $email, $birthDay,
+            $phone, $cep, $address, $cnh, $role,
             $status, $userId
         );
     }
@@ -332,7 +362,7 @@ if ($photo_url !== null) {
 if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
-    header("Location: users_editar.php?id=$userId&success=1");
+    header("Location: users_consultar.php?success=updated");
     exit();
 } else {
     error_log("Erro ao atualizar usuário: " . $stmt->error);

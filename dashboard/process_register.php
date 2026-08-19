@@ -27,9 +27,11 @@ $conn->set_charset("utf8mb4");
 
 $name       = trim($_POST['name'] ?? '');
 $lastname   = trim($_POST['lastname'] ?? '');
+$username   = strtolower(trim($_POST['username'] ?? ''));
 $email      = trim($_POST['email'] ?? '');
 $birth_day  = trim($_POST['birth_day'] ?? '');
 $phone      = trim($_POST['phone'] ?? '');
+$cep        = trim($_POST['cep'] ?? '');
 $address    = trim($_POST['address'] ?? '');
 $cnh        = trim($_POST['cnh'] ?? '');
 
@@ -47,9 +49,11 @@ $role       = $_POST['role'] ?? 'user';
 $_SESSION['old_input'] = [
     'name'      => $name,
     'lastname'  => $lastname,
+    'username'  => $username,
     'email'     => $email,
     'birth_day' => $birth_day,
     'phone'     => $phone,
+    'cep'       => $cep,
     'address'   => $address,
     'cnh'       => $cnh,
     'role'      => $role,
@@ -63,6 +67,16 @@ $_SESSION['old_input'] = [
 
 if (empty($name)) {
     header("Location: register.php?error=name_required");
+    exit();
+}
+
+if (empty($username)) {
+    header("Location: register.php?error=username_required");
+    exit();
+}
+
+if (!preg_match('/^[a-z0-9._-]+$/', $username)) {
+    header("Location: register.php?error=username_invalid");
     exit();
 }
 
@@ -141,6 +155,24 @@ if ($check->num_rows > 0) {
 }
 
 $check->close();
+
+/*
+|--------------------------------------------------------------------------
+| VERIFICAR USERNAME
+|--------------------------------------------------------------------------
+*/
+
+$checkUser = $conn->prepare("SELECT id FROM users WHERE username = ?");
+$checkUser->bind_param("s", $username);
+$checkUser->execute();
+$checkUser->store_result();
+
+if ($checkUser->num_rows > 0) {
+    $checkUser->close();
+    header("Location: register.php?error=username_exists");
+    exit();
+}
+$checkUser->close();
 
 /*
 |--------------------------------------------------------------------------
@@ -320,10 +352,12 @@ $stmt = $conn->prepare("
     INSERT INTO users (
         name,
         lastname,
+        username,
         photo_url,
         email,
         birth_day,
         phone,
+        cep,
         address,
         cnh,
         password_hash,
@@ -331,7 +365,7 @@ $stmt = $conn->prepare("
         created_at
     )
     VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
     )
 ");
 
@@ -342,13 +376,15 @@ if (!$stmt) {
 }
 
 $stmt->bind_param(
-    "ssssssssss",
+    "ssssssssssss",
     $name,
     $lastname,
+    $username,
     $photo_url,
     $email,
     $birth_day,
     $phone,
+    $cep,
     $address,
     $cnh,
     $password_hash,
@@ -363,7 +399,7 @@ if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
 
-    header("Location: register.php?success=1");
+    header("Location: users_consultar.php?success=registered");
     exit();
 
 } else {
