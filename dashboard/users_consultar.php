@@ -155,9 +155,7 @@ $current_user_id = (int)$_SESSION['user_id'];
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-            <button class="publish-btn">
-                🚀 Publicar Planejamento
-            </button>
+
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->

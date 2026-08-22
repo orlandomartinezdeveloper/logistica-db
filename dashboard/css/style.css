@@ -147,23 +147,6 @@ body.no-scroll {
     font-family: 'PoppinsSemiBold';
 }
 
-.publish-btn {
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: var(--white);
-    color: var(--sidebar-bg);
-    font-family: 'PoppinsSemiBold';
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.publish-btn:hover {
-    background: var(--green);
-    color: var(--white);
-    transform: translateY(-1px);
-}
-
 /* ==============================
    CONTENT
 ============================== */

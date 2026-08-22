@@ -149,9 +149,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-            <button class="publish-btn">
-                🚀 Publicar Planejamento
-            </button>
+
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->

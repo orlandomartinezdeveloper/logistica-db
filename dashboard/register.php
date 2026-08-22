@@ -107,9 +107,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-            <button class="publish-btn">
-                🚀 Publicar Planejamento
-            </button>
+
 
         </aside>
 
