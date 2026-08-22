@@ -1492,7 +1492,8 @@ body.no-scroll {
     }
     .modal-box-consulta {
         max-width: 95vw;
-        max-height: 95vh;
+        max-height: 90vh;
+        margin: 10px;
     }
     .consulta-photo-wrapper {
         width: 120px;
@@ -1540,7 +1541,7 @@ body.no-scroll {
 @media (max-width: 480px) {
     .modal-box {
         padding: 20px 16px 16px;
-        margin: 8px;
+        margin: 10px;
     }
     .consulta-photo-wrapper {
         width: 100px;
