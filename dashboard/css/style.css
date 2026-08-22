@@ -901,6 +901,11 @@ body.no-scroll {
         padding: 8px 8px;
     }
 
+    .users-table td:nth-child(2) {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
     .user-photo,
     .user-photo-placeholder {
         width: 84px;
@@ -947,6 +952,11 @@ body.no-scroll {
     .users-table td {
         padding: 5px 4px;
         font-size: 11px;
+    }
+
+    .users-table td:nth-child(2) {
+        font-size: 14px;
+        font-weight: 600;
     }
 
     .users-table th {
