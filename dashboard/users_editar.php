@@ -104,7 +104,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <meta charset="UTF-8">
     <title>Calebito - Editar Usuário</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../img/favicon.png">
+    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">

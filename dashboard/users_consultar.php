@@ -109,7 +109,7 @@ $current_user_id = (int)$_SESSION['user_id'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="../../img/favicon.png">
+    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">

@@ -632,7 +632,7 @@ body.no-scroll {
 .search-bar {
     display: flex;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 0;
     margin-bottom: 24px;
     max-width: 600px;
 }

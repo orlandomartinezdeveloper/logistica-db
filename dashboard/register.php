@@ -63,7 +63,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
     <meta charset="UTF-8">
     <title>Registrar Usuário - Calebito</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../img/favicon.png">
+    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -161,6 +161,22 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         placeholder="Digite o nome">
                 </div>
 
+                <!-- Sobrenome -->
+                <div class="form-group">
+                    <label for="lastname">
+                        <i class="fa-solid fa-user"></i>
+                        Sobrenome:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="lastname"
+                        name="lastname"
+                        required
+                        value="<?= old('lastname', $old) ?>"
+                        placeholder="Digite o sobrenome">
+                </div>
+
                 <!-- Nome de Usuário -->
                 <div class="form-group">
                     <label for="username">
@@ -177,22 +193,6 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         placeholder="Ex: joao.silva"
                         class="lowercase-input">
                     <small>Letras minúsculas, sem espaços. Será usado para login.</small>
-                </div>
-
-                <!-- Sobrenome -->
-                <div class="form-group">
-                    <label for="lastname">
-                        <i class="fa-solid fa-user"></i>
-                        Sobrenome:
-                    </label>
-
-                    <input
-                        type="text"
-                        id="lastname"
-                        name="lastname"
-                        required
-                        value="<?= old('lastname', $old) ?>"
-                        placeholder="Digite o sobrenome">
                 </div>
 
                 <!-- Foto -->
