@@ -28,6 +28,18 @@ Siempre verificar la compatibilidad antes de escribir código PHP.
 
 **NUNCA colocar código CSS inline dentro de archivos PHP del dashboard (ni en `<style>` dentro de los PHP).** Todo el CSS del dashboard DEBE estar en el archivo `dashboard/css/style.css`. Al crear o modificar estilos, siempre agregarlos al final de `style.css` y referenciarlo desde el PHP con `<link rel="stylesheet" href="css/style.css">`.
 
+## REGLA IMPORTANTE: Listado de archivos a subir
+
+**Después de cada modificación, SIEMPRE listar los archivos exactos que el usuario debe subir a HostGator via File Manager.** Siempre terminar la respuesta con una sección clara tipo:
+
+```
+Archivos a subir a HostGator:
+- ruta/archivo1.php
+- ruta/archivo2.css
+```
+
+Nunca asumir que el usuario sabe qué archivos cambiaron. Ser explícito y completo.
+
 ## REGLA IMPORTANTE: Sincronización Repo ↔ XAMPP
 
 **Siempre ejecutar el script de sincronización DESPUÉS de crear o modificar cualquier archivo del proyecto.** Las carpetas del repo y XAMPP NO se sincronizan automáticamente y tienen rutas diferentes (config require e imágenes).
