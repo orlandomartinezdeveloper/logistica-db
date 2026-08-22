@@ -147,6 +147,29 @@ body.no-scroll {
     font-family: 'PoppinsSemiBold';
 }
 
+.logout-btn {
+    color: var(--sidebar-text);
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    transition: background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+}
+
+.logout-btn i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.logout-btn:hover {
+    background: #e74c3c;
+    color: var(--white);
+}
+
 /* ==============================
    CONTENT
 ============================== */

@@ -149,7 +149,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-
+            <a href="../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->

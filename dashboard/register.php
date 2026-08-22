@@ -107,8 +107,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-
-
+            <a href="../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </aside>
 
         <!-- MAIN CONTENT -->

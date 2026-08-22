@@ -155,7 +155,7 @@ $current_user_id = (int)$_SESSION['user_id'];
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-
+            <a href="../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
