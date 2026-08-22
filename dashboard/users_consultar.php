@@ -112,7 +112,7 @@ $current_user_id = (int)$_SESSION['user_id'];
     <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
 </head>
 <body>

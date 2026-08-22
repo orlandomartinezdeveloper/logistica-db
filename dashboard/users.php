@@ -32,7 +32,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
 </head>
 <body>

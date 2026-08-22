@@ -66,7 +66,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
     <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
     <link rel="stylesheet" href="css/register.css">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
 </head>
