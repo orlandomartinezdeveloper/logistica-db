@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 define('ACCESS_ALLOWED', true);
 
