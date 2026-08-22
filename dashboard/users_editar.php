@@ -210,6 +210,21 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         placeholder="Digite o nome">
                 </div>
 
+                <!-- Sobrenome -->
+                <div class="form-group">
+                    <label for="lastname">
+                        <i class="fa-solid fa-user"></i>
+                        Sobrenome:
+                    </label>
+                    <input
+                        type="text"
+                        id="lastname"
+                        name="lastname"
+                        required
+                        value="<?php echo htmlspecialchars($user['lastname']); ?>"
+                        placeholder="Digite o sobrenome">
+                </div>
+
                 <!-- Nome de Usuário -->
                 <div class="form-group">
                     <label for="username">
@@ -225,21 +240,6 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         placeholder="Ex: joao.silva"
                         class="lowercase-input">
                     <small>Letras minúsculas, sem espaços. Será usado para login.</small>
-                </div>
-
-                <!-- Sobrenome -->
-                <div class="form-group">
-                    <label for="lastname">
-                        <i class="fa-solid fa-user"></i>
-                        Sobrenome:
-                    </label>
-                    <input
-                        type="text"
-                        id="lastname"
-                        name="lastname"
-                        required
-                        value="<?php echo htmlspecialchars($user['lastname']); ?>"
-                        placeholder="Digite o sobrenome">
                 </div>
 
                 <!-- Nova Foto -->
