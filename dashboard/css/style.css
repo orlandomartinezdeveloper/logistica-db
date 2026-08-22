@@ -273,6 +273,9 @@ body.no-scroll {
         height: calc(100vh - 64px);
         z-index: 10;
         transition: left 0.3s ease;
+        overflow-y: auto;
+        justify-content: flex-start;
+        padding-bottom: 20px;
     }
 
     .sidebar.active {
