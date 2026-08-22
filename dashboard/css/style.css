@@ -903,12 +903,12 @@ body.no-scroll {
 
     .user-photo,
     .user-photo-placeholder {
-        width: 60px;
-        height: 60px;
+        width: 84px;
+        height: 84px;
     }
 
     .user-photo-placeholder {
-        font-size: 24px;
+        font-size: 34px;
     }
 }
 
@@ -966,12 +966,12 @@ body.no-scroll {
 
     .user-photo,
     .user-photo-placeholder {
-        width: 43px;
-        height: 43px;
+        width: 60px;
+        height: 60px;
     }
 
     .user-photo-placeholder {
-        font-size: 17px;
+        font-size: 24px;
     }
 
     .btn-table {
