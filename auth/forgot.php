@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -130,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../../img/favicon.png" type="image/x-icon">
     <title>Calebito - Sistema Inteligente de Gestão de Frotas</title>
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -149,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- CONTENIDO -->
         <div class="content">
             <img
-                src="../img/logo-light.svg"
+                src="../../img/logo-light.svg"
                 alt="Logo Calebito"
                 class="logo">
 
@@ -190,18 +190,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="truck-container">
             <div class="truck-wrapper">
                 <img
-                    src="../img/camiao-calebito.png"
+                    src="../../img/camiao-calebito.png"
                     alt="Camión Calebito"
                     class="truck">
                 <div class="wheel wheel-back">
                     <img
-                        src="../img/rueda.png"
+                        src="../../img/rueda.png"
                         alt="Rueda"
                         class="wheel-img">
                 </div>
                 <div class="wheel wheel-front">
                     <img
-                        src="../img/rueda.png"
+                        src="../../img/rueda.png"
                         alt="Rueda"
                         class="wheel-img">
                 </div>

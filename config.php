@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // Bloquear acceso directo
 if (!defined('ACCESS_ALLOWED')) {

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 define('ACCESS_ALLOWED', true);
 
@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $valid && $user) {
         content="width=device-width, initial-scale=1.0">
     <link
         rel="shortcut icon"
-        href="../img/favicon.png"
+        href="../../img/favicon.png"
         type="image/x-icon">
 
     <title>Calebito - Sistema Inteligente de Gestão de Frotas</title>
@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $valid && $user) {
         <!-- CONTENIDO -->
         <div class="content">
             <img
-                src="../img/logo-light.svg"
+                src="../../img/logo-light.svg"
                 alt="Logo Calebito"
                 class="logo">
             <h1 class="subtitle">
@@ -147,18 +147,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $valid && $user) {
         <div class="truck-container">
             <div class="truck-wrapper">
                 <img
-                    src="../img/camiao-calebito.png"
+                    src="../../img/camiao-calebito.png"
                     alt="Camión Calebito"
                     class="truck">
                 <div class="wheel wheel-back">
                     <img
-                        src="../img/rueda.png"
+                        src="../../img/rueda.png"
                         alt="Rueda"
                         class="wheel-img">
                 </div>
                 <div class="wheel wheel-front">
                     <img
-                        src="../img/rueda.png"
+                        src="../../img/rueda.png"
                         alt="Rueda"
                         class="wheel-img">
                 </div>

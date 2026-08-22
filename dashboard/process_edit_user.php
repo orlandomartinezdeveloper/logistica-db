@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 /*
@@ -240,7 +240,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
         $newWidth, $newHeight
     );
 
-    $uploadDir = __DIR__ . "/../img/users/";
+    $uploadDir = __DIR__ . "/../../img/users/";
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }

@@ -1,4 +1,4 @@
-# Instrucciones para el Agente
+﻿# Instrucciones para el Agente
 
 ## REGLA IMPORTANTE: Idioma del Proyecto
 
@@ -59,7 +59,7 @@ Siempre verificar la compatibilidad antes de escribir código PHP.
 
 **Cuando se cree un archivo nuevo en `dashboard/`**:
 1. En el repositorio original, usar `../../img/` para favicons e imágenes
-2. En la copia de XAMPP, ajustar a `../img/`
+2. En la copia de XAMPP, ajustar a `../../img/`
 3. NUNCA editar el original para que funcione en local
 
 **IMPORTANTE: Para probar en el servidor local XAMPP**:
@@ -67,7 +67,7 @@ Siempre copiar los archivos modificados del repositorio a la carpeta de XAMPP:
 ```powershell
 Copy-Item "F:\Projeto-Web\calebitotransporte\ruta\archivo.php" "C:\xampp\htdocs\calebitotransporte\ruta\archivo.php" -Force
 ```
-Después de copiar, ajustar las rutas de imágenes de `../../img/` a `../img/` solo en la copia de XAMPP, NUNCA en el original.
+Después de copiar, ajustar las rutas de imágenes de `../../img/` a `../../img/` solo en la copia de XAMPP, NUNCA en el original.
 
 ### REGLA IMPORTANTE: Require de config.php
 
@@ -75,15 +75,15 @@ Después de copiar, ajustar las rutas de imágenes de `../../img/` a `../img/` s
 
 | Archivo | Repositorio (HostGator) | XAMPP (local) |
 |---------|------------------------|---------------|
-| `auth/login.php` | `require '/home/calebito/config.php'` | `require __DIR__ . '/../config.php'` |
-| `auth/forgot.php` | `require '/home/calebito/config.php'` | `require __DIR__ . '/../config.php'` |
-| `auth/reset.php` | `require '/home/calebito/config.php'` | `require __DIR__ . '/../config.php'` |
-| `dashboard/process_register.php` | `require '/home/calebito/config.php'` | `require __DIR__ . '/../config.php'` |
-| Cualquier archivo futuro con config | `require '/home/calebito/config.php'` | `require __DIR__ . '/../config.php'` |
+| `auth/login.php` | `require '/home/calebito/config.php'` | `require '/home/calebito/config.php'` |
+| `auth/forgot.php` | `require '/home/calebito/config.php'` | `require '/home/calebito/config.php'` |
+| `auth/reset.php` | `require '/home/calebito/config.php'` | `require '/home/calebito/config.php'` |
+| `dashboard/process_register.php` | `require '/home/calebito/config.php'` | `require '/home/calebito/config.php'` |
+| Cualquier archivo futuro con config | `require '/home/calebito/config.php'` | `require '/home/calebito/config.php'` |
 
 **Cuando se copie un archivo con require de config a XAMPP**:
 1. El original DEBE mantener `require '/home/calebito/config.php'` para HostGator
-2. En la copia de XAMPP, cambiar a `require __DIR__ . '/../config.php'`
+2. En la copia de XAMPP, cambiar a `require '/home/calebito/config.php'`
 3. NUNCA editar el original para que funcione en local
 
 ### Servicios XAMPP

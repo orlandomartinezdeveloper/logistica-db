@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -238,7 +238,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     }
 
     // Pasta onde serão armazenadas as fotos
-    $uploadDir = __DIR__ . "/../img/users/";
+    $uploadDir = __DIR__ . "/../../img/users/";
 
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
