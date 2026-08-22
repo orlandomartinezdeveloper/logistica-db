@@ -170,6 +170,7 @@ body.no-scroll {
 .content {
     flex: 1;
     padding: 30px;
+    padding-top: 16px;
     background: var(--content-bg);
     overflow-y: auto;
 }
@@ -177,6 +178,7 @@ body.no-scroll {
 .content h1 {
     font-family: 'PoppinsSemiBold';
     font-size: 22px;
+    margin-top: 0;
     margin-bottom: 10px;
 }
 
