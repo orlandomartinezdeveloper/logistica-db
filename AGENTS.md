@@ -20,6 +20,28 @@ Siempre verificar la compatibilidad antes de escribir código PHP.
 
 **NUNCA colocar código CSS inline dentro de archivos PHP del dashboard (ni en `<style>` dentro de los PHP).** Todo el CSS del dashboard DEBE estar en el archivo `dashboard/css/style.css`. Al crear o modificar estilos, siempre agregarlos al final de `style.css` y referenciarlo desde el PHP con `<link rel="stylesheet" href="css/style.css">`.
 
+## REGLA IMPORTANTE: Sincronización Repo ↔ XAMPP
+
+**Siempre ejecutar el script de sincronización DESPUÉS de crear o modificar cualquier archivo del proyecto.** Las carpetas del repo y XAMPP NO se sincronizan automáticamente y tienen rutas diferentes (config require e imágenes).
+
+```powershell
+# Menú interactivo (elige dirección)
+.\sync.ps1
+
+# Directo
+.\sync.ps1 -Direction repo-to-xampp
+.\sync.ps1 -Direction xampp-to-repo
+```
+
+El script ajusta automáticamente:
+- `require '/home/calebito/config.php'` ↔ `require __DIR__ . '/../config.php'`
+- `../../img/` ↔ `../img/`
+
+**Regla de flujo de trabajo:**
+1. **Si editaste en el repo** (`F:\Projeto-Web\...`) → ejecutar `.\sync.ps1 -Direction repo-to-xampp`
+2. **Si editaste en XAMPP** (`C:\xampp\htdocs\...`) → ejecutar `.\sync.ps1 -Direction xampp-to-repo`
+3. Siempre ejecutar sync antes de commit a GitHub y antes de probar en el navegador local
+
 ## Configuración del Proyecto
 
 ### Estructura de carpetas
