@@ -16,6 +16,14 @@
 
 Siempre verificar la compatibilidad antes de escribir código PHP.
 
+## REGLA IMPORTANTE: Encoding de archivos
+
+**NUNCA guardar archivos PHP con BOM (Byte Order Mark).** Siempre usar UTF-8 **sin BOM**. El BOM causa espacios en blanco antes del `<!DOCTYPE html>` y rompe el favicon. Al escribir archivos PHP, usar:
+```powershell
+[System.IO.File]::WriteAllText($path, $content, (New-Object System.Text.UTF8Encoding $false))
+```
+**NUNCA** usar `Set-Content -Encoding UTF8` porque agrega BOM automáticamente.
+
 ## REGLA IMPORTANTE: CSS del Dashboard
 
 **NUNCA colocar código CSS inline dentro de archivos PHP del dashboard (ni en `<style>` dentro de los PHP).** Todo el CSS del dashboard DEBE estar en el archivo `dashboard/css/style.css`. Al crear o modificar estilos, siempre agregarlos al final de `style.css` y referenciarlo desde el PHP con `<link rel="stylesheet" href="css/style.css">`.

@@ -122,7 +122,7 @@ function Sync-Direction {
 
         $content = Get-Content $file.FullName -Raw -Encoding UTF8
         $newContent = & $Converter $content
-        Set-Content -Path $destFile -Value $newContent -Encoding UTF8 -NoNewline
+        [System.IO.File]::WriteAllText($destFile, $newContent, (New-Object System.Text.UTF8Encoding $false))
 
         if ($status -eq "CREADO") { $created += $relativePath }
         else { $updated += $relativePath }
