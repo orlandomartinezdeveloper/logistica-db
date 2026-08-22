@@ -157,6 +157,7 @@ body.no-scroll {
     font-size: 14px;
     transition: background 0.2s ease, color 0.2s ease;
     cursor: pointer;
+    margin-top: 6px;
 }
 
 .logout-btn i {
