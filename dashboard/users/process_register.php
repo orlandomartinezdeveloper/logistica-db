@@ -13,7 +13,7 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
     error_log($conn->connect_error);
-    header("Location: register.php?error=db_connection");
+    header("Location: users_register.php?error=db_connection");
     exit();
 }
 
@@ -66,67 +66,67 @@ $_SESSION['old_input'] = [
 */
 
 if (empty($name)) {
-    header("Location: register.php?error=name_required");
+    header("Location: users_register.php?error=name_required");
     exit();
 }
 
 if (empty($username)) {
-    header("Location: register.php?error=username_required");
+    header("Location: users_register.php?error=username_required");
     exit();
 }
 
 if (!preg_match('/^[a-z0-9._-]+$/', $username)) {
-    header("Location: register.php?error=username_invalid");
+    header("Location: users_register.php?error=username_invalid");
     exit();
 }
 
 if (empty($lastname)) {
-    header("Location: register.php?error=lastname_required");
+    header("Location: users_register.php?error=lastname_required");
     exit();
 }
 
 if (empty($email)) {
-    header("Location: register.php?error=email_required");
+    header("Location: users_register.php?error=email_required");
     exit();
 }
 
 if (empty($birth_day)) {
-    header("Location: register.php?error=birth_day_required");
+    header("Location: users_register.php?error=birth_day_required");
     exit();
 }
 
 if (empty($phone)) {
-    header("Location: register.php?error=phone_required");
+    header("Location: users_register.php?error=phone_required");
     exit();
 }
 
 if (empty($address)) {
-    header("Location: register.php?error=address_required");
+    header("Location: users_register.php?error=address_required");
     exit();
 }
 
 if (empty($cnh)) {
-    header("Location: register.php?error=cnh_required");
+    header("Location: users_register.php?error=cnh_required");
     exit();
 }
 
 if (empty($password)) {
-    header("Location: register.php?error=password_required");
+    header("Location: users_register.php?error=password_required");
     exit();
 }
 
 if ($password !== $confirm) {
-    header("Location: register.php?error=password_mismatch");
+    header("Location: users_register.php?error=password_mismatch");
     exit();
 }
 
 if (strlen($password) < 6) {
-    header("Location: register.php?error=password_short");
+    header("Location: users_register.php?error=password_short");
     exit();
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header("Location: register.php?error=invalid_email");
+    header("Location: users_register.php?error=invalid_email");
     exit();
 }
 
@@ -148,7 +148,7 @@ if ($check->num_rows > 0) {
 
     $check->close();
 
-    header("Location: register.php?error=email_exists");
+    header("Location: users_register.php?error=email_exists");
 
     exit();
 
@@ -169,7 +169,7 @@ $checkUser->store_result();
 
 if ($checkUser->num_rows > 0) {
     $checkUser->close();
-    header("Location: register.php?error=username_exists");
+    header("Location: users_register.php?error=username_exists");
     exit();
 }
 $checkUser->close();
@@ -189,13 +189,13 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
 
     // Verificar erro de upload
     if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
-        header("Location: register.php?error=upload_error");
+        header("Location: users_register.php?error=upload_error");
         exit();
     }
 
     // Verificar tamanho
     if ($_FILES['photo']['size'] > $maxSize) {
-        header("Location: register.php?error=image_too_large");
+        header("Location: users_register.php?error=image_too_large");
         exit();
     }
 
@@ -203,7 +203,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     $imageInfo = getimagesize($_FILES['photo']['tmp_name']);
 
     if ($imageInfo === false) {
-        header("Location: register.php?error=invalid_image");
+        header("Location: users_register.php?error=invalid_image");
         exit();
     }
 
@@ -221,7 +221,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     ];
 
     if (!in_array($extension, $allowedExtensions)) {
-        header("Location: register.php?error=invalid_image");
+        header("Location: users_register.php?error=invalid_image");
         exit();
     }
 
@@ -233,7 +233,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     ];
 
     if (!in_array($imageInfo['mime'], $allowedMime)) {
-        header("Location: register.php?error=invalid_image");
+        header("Location: users_register.php?error=invalid_image");
         exit();
     }
 
@@ -273,12 +273,12 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
             $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
             break;
         default:
-            header("Location: register.php?error=invalid_image");
+            header("Location: users_register.php?error=invalid_image");
             exit();
     }
 
     if (!$sourceImage) {
-        header("Location: register.php?error=upload_error");
+        header("Location: users_register.php?error=upload_error");
         exit();
     }
 
@@ -327,7 +327,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     imagedestroy($resizedImage);
 
     if (!$saved) {
-        header("Location: register.php?error=upload_error");
+        header("Location: users_register.php?error=upload_error");
         exit();
     }
 
@@ -371,7 +371,7 @@ $stmt = $conn->prepare("
 
 if (!$stmt) {
     error_log("Erro ao preparar INSERT: " . $conn->error);
-    header("Location: register.php?error=server_error");
+    header("Location: users_register.php?error=server_error");
     exit();
 }
 
@@ -405,7 +405,7 @@ if ($stmt->execute()) {
 } else {
 
     error_log("Erro ao inserir usuário: " . $stmt->error);
-    header("Location: register.php?error=server_error");
+    header("Location: users_register.php?error=server_error");
     exit();
 
 }
