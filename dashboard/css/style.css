@@ -851,6 +851,19 @@ body.no-scroll {
 
 /* Colunas: 1=Foto 2=Nome 3=Sobrenome 4=E-mail 5=Telefone 6=Função 7=Status 8=Ações */
 
+/* 1025px–1205px: ocultar E-mail + Telefone */
+@media (min-width: 1025px) and (max-width: 1205px) {
+    .users-table th:nth-child(4),
+    .users-table td:nth-child(4) {
+        display: none;
+    }
+
+    .users-table th:nth-child(5),
+    .users-table td:nth-child(5) {
+        display: none;
+    }
+}
+
 /* 1025px–1623px: ocultar E-mail */
 @media (min-width: 1025px) and (max-width: 1623px) {
     .users-table th:nth-child(4),
