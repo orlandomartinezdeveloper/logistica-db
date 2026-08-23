@@ -25,7 +25,7 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
     error_log($conn->connect_error);
-    header("Location: users/users_edit.php?error=db_connection");
+    header("Location: users_edit.php?error=db_connection");
     exit();
 }
 
@@ -58,57 +58,57 @@ $password = $_POST['password'] ?? '';
 */
 
 if ($userId <= 0) {
-    header("Location: users/users_edit.php?error=user_not_found");
+    header("Location: users_edit.php?error=user_not_found");
     exit();
 }
 
 if (empty($name)) {
-    header("Location: users/users_edit.php?id=$userId&error=name_required");
+    header("Location: users_edit.php?id=$userId&error=name_required");
     exit();
 }
 
 if (empty($username)) {
-    header("Location: users/users_edit.php?id=$userId&error=username_required");
+    header("Location: users_edit.php?id=$userId&error=username_required");
     exit();
 }
 
 if (!preg_match('/^[a-z0-9._-]+$/', $username)) {
-    header("Location: users/users_edit.php?id=$userId&error=username_invalid");
+    header("Location: users_edit.php?id=$userId&error=username_invalid");
     exit();
 }
 
 if (empty($lastname)) {
-    header("Location: users/users_edit.php?id=$userId&error=lastname_required");
+    header("Location: users_edit.php?id=$userId&error=lastname_required");
     exit();
 }
 
 if (empty($email)) {
-    header("Location: users/users_edit.php?id=$userId&error=email_required");
+    header("Location: users_edit.php?id=$userId&error=email_required");
     exit();
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header("Location: users/users_edit.php?id=$userId&error=invalid_email");
+    header("Location: users_edit.php?id=$userId&error=invalid_email");
     exit();
 }
 
 if (empty($birthDay)) {
-    header("Location: users/users_edit.php?id=$userId&error=birth_day_required");
+    header("Location: users_edit.php?id=$userId&error=birth_day_required");
     exit();
 }
 
 if (empty($phone)) {
-    header("Location: users/users_edit.php?id=$userId&error=phone_required");
+    header("Location: users_edit.php?id=$userId&error=phone_required");
     exit();
 }
 
 if (empty($address)) {
-    header("Location: users/users_edit.php?id=$userId&error=address_required");
+    header("Location: users_edit.php?id=$userId&error=address_required");
     exit();
 }
 
 if (empty($cnh)) {
-    header("Location: users/users_edit.php?id=$userId&error=cnh_required");
+    header("Location: users_edit.php?id=$userId&error=cnh_required");
     exit();
 }
 
@@ -125,7 +125,7 @@ $check->store_result();
 
 if ($check->num_rows > 0) {
     $check->close();
-    header("Location: users/users_edit.php?id=$userId&error=email_exists");
+    header("Location: users_edit.php?id=$userId&error=email_exists");
     exit();
 }
 $check->close();
@@ -143,7 +143,7 @@ $checkUser->store_result();
 
 if ($checkUser->num_rows > 0) {
     $checkUser->close();
-    header("Location: users/users_edit.php?id=$userId&error=username_exists");
+    header("Location: users_edit.php?id=$userId&error=username_exists");
     exit();
 }
 $checkUser->close();
@@ -161,26 +161,26 @@ $maxSize = 5 * 1024 * 1024; // 5 MB
 if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) {
 
     if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
-        header("Location: users/users_edit.php?id=$userId&error=upload_error");
+        header("Location: users_edit.php?id=$userId&error=upload_error");
         exit();
     }
 
     if ($_FILES['photo']['size'] > $maxSize) {
-        header("Location: users/users_edit.php?id=$userId&error=image_too_large");
+        header("Location: users_edit.php?id=$userId&error=image_too_large");
         exit();
     }
 
     $imageInfo = getimagesize($_FILES['photo']['tmp_name']);
 
     if ($imageInfo === false) {
-        header("Location: users/users_edit.php?id=$userId&error=invalid_image");
+        header("Location: users_edit.php?id=$userId&error=invalid_image");
         exit();
     }
 
     $allowedMime = ["image/jpeg", "image/png", "image/webp"];
 
     if (!in_array($imageInfo['mime'], $allowedMime)) {
-        header("Location: users/users_edit.php?id=$userId&error=invalid_image");
+        header("Location: users_edit.php?id=$userId&error=invalid_image");
         exit();
     }
 
@@ -205,12 +205,12 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
             $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
             break;
         default:
-            header("Location: users/users_edit.php?id=$userId&error=invalid_image");
+            header("Location: users_edit.php?id=$userId&error=invalid_image");
             exit();
     }
 
     if (!$sourceImage) {
-        header("Location: users/users_edit.php?id=$userId&error=upload_error");
+        header("Location: users_edit.php?id=$userId&error=upload_error");
         exit();
     }
 
@@ -253,7 +253,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     imagedestroy($resizedImage);
 
     if (!$saved) {
-        header("Location: users/users_edit.php?id=$userId&error=upload_error");
+        header("Location: users_edit.php?id=$userId&error=upload_error");
         exit();
     }
 
@@ -286,7 +286,7 @@ if ($photo_url !== null) {
     if (!empty($password)) {
         // Com senha nova
         if (strlen($password) < 6) {
-            header("Location: users/users_edit.php?id=$userId&error=password_short");
+            header("Location: users_edit.php?id=$userId&error=password_short");
             exit();
         }
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -324,7 +324,7 @@ if ($photo_url !== null) {
     if (!empty($password)) {
         // Com senha nova
         if (strlen($password) < 6) {
-            header("Location: users/users_edit.php?id=$userId&error=password_short");
+            header("Location: users_edit.php?id=$userId&error=password_short");
             exit();
         }
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -362,13 +362,13 @@ if ($photo_url !== null) {
 if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
-    header("Location: users/users_consult.php?success=updated");
+    header("Location: users_consult.php?success=updated");
     exit();
 } else {
     error_log("Erro ao atualizar usuário: " . $stmt->error);
     $stmt->close();
     $conn->close();
-    header("Location: users/users_edit.php?id=$userId&error=server_error");
+    header("Location: users_edit.php?id=$userId&error=server_error");
     exit();
 }
 ?>

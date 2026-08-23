@@ -399,7 +399,7 @@ if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
 
-    header("Location: users/users_consult.php?success=registered");
+    header("Location: users_consult.php?success=registered");
     exit();
 
 } else {

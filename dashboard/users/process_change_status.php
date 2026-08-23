@@ -26,7 +26,7 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
     error_log($conn->connect_error);
-    header("Location: users/users_consult.php?error=server_error");
+    header("Location: users_consult.php?error=server_error");
     exit();
 }
 
@@ -49,14 +49,14 @@ $newStatus = trim($_POST['new_status'] ?? '');
 */
 
 if ($userId <= 0) {
-    header("Location: users/users_consult.php?error=user_not_found");
+    header("Location: users_consult.php?error=user_not_found");
     exit();
 }
 
 $allowedStatuses = ['ativo', 'ferias', 'desligado'];
 
 if (!in_array($newStatus, $allowedStatuses)) {
-    header("Location: users/users_consult.php?error=server_error");
+    header("Location: users_consult.php?error=server_error");
     exit();
 }
 
@@ -73,7 +73,7 @@ $check->store_result();
 
 if ($check->num_rows === 0) {
     $check->close();
-    header("Location: users/users_consult.php?error=user_not_found");
+    header("Location: users_consult.php?error=user_not_found");
     exit();
 }
 $check->close();
@@ -90,13 +90,13 @@ $stmt->bind_param("si", $newStatus, $userId);
 if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
-    header("Location: users/users_consult.php?success=status_changed");
+    header("Location: users_consult.php?success=status_changed");
     exit();
 } else {
     error_log("Erro ao mudar status do usuário: " . $stmt->error);
     $stmt->close();
     $conn->close();
-    header("Location: users/users_consult.php?error=server_error");
+    header("Location: users_consult.php?error=server_error");
     exit();
 }
 ?>
