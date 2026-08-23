@@ -98,7 +98,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 </a>
 
                 <!-- Botão: Consultar, editar e excluir usuários -->
-                <a href="users_consultar.php" class="action-btn btn-search">
+                <a href="users/users_consult.php" class="action-btn btn-search">
                     <span class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                     <span class="action-text">
                         <strong>Consultar</strong>

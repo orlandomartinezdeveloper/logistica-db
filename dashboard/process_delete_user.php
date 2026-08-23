@@ -25,7 +25,7 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
     error_log($conn->connect_error);
-    header("Location: users_consultar.php?error=server_error");
+    header("Location: users/users_consult.php?error=server_error");
     exit();
 }
 
@@ -47,13 +47,13 @@ $action  = trim($_POST['action'] ?? '');
 */
 
 if ($userId <= 0) {
-    header("Location: users_consultar.php?error=user_not_found");
+    header("Location: users/users_consult.php?error=user_not_found");
     exit();
 }
 
 // Não permitir que o usuário exclua a si mesmo
 if ($userId === (int)$_SESSION['user_id']) {
-    header("Location: users_consultar.php?error=self_delete");
+    header("Location: users/users_consult.php?error=self_delete");
     exit();
 }
 
@@ -65,7 +65,7 @@ $check->store_result();
 
 if ($check->num_rows === 0) {
     $check->close();
-    header("Location: users_consultar.php?error=user_not_found");
+    header("Location: users/users_consult.php?error=user_not_found");
     exit();
 }
 $check->close();
@@ -83,13 +83,13 @@ if ($action === 'deactivate') {
     if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
-        header("Location: users_consultar.php?success=deactivated");
+        header("Location: users/users_consult.php?success=deactivated");
         exit();
     } else {
         error_log("Erro ao desligar usuário: " . $stmt->error);
         $stmt->close();
         $conn->close();
-        header("Location: users_consultar.php?error=server_error");
+        header("Location: users/users_consult.php?error=server_error");
         exit();
     }
 }
@@ -123,13 +123,13 @@ if ($action === 'delete') {
     if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
-        header("Location: users_consultar.php?success=deleted");
+        header("Location: users/users_consult.php?success=deleted");
         exit();
     } else {
         error_log("Erro ao excluir usuário: " . $stmt->error);
         $stmt->close();
         $conn->close();
-        header("Location: users_consultar.php?error=server_error");
+        header("Location: users/users_consult.php?error=server_error");
         exit();
     }
 }
@@ -141,6 +141,6 @@ if ($action === 'delete') {
 */
 
 $conn->close();
-header("Location: users_consultar.php?error=server_error");
+header("Location: users/users_consult.php?error=server_error");
 exit();
 ?>

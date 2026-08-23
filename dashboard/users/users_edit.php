@@ -9,7 +9,7 @@ session_start();
 */
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -76,7 +76,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
 $userId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($userId <= 0) {
-    header("Location: users_consultar.php");
+    header("Location: users_consult.php");
     exit();
 }
 
@@ -92,7 +92,7 @@ $user = $result->fetch_assoc();
 $stmt->close();
 
 if (!$user) {
-    header("Location: users_consultar.php?error=user_not_found");
+    header("Location: users_consult.php?error=user_not_found");
     exit();
 }
 
@@ -104,19 +104,19 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <meta charset="UTF-8">
     <title>Calebito - Editar Usuário</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="../../../img/favicon.png?v=2">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css?v=3">
-    <link rel="stylesheet" href="css/register.css">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css?v=3">
+    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
 </head>
 <body>
 
     <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
-            <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
+            <img src="../../../img/logo-light.svg" alt="Calebito" class="logo">
             <div class="title">
                 Sistema Inteligente de Gestão de Frotas
                 <small>Version: Beta 0.5</small>
@@ -137,19 +137,19 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
         <!-- BARRA LATERAL -->
         <aside class="sidebar">
             <nav>
-                <a href="index.php"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="../index.php"><i class="fa-solid fa-house"></i> Início</a>
                 <a href="#"><i class="fa-solid fa-inbox"></i> Caixa de Entrada</a>
                 <a href="#"><i class="fa-solid fa-calendar-days"></i> Calendário</a>
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Status das Tarefas</a>
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
-                <a class="active" href="users.php"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a class="active" href="../users.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-            <a href="../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            <a href="../../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
@@ -175,7 +175,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             <?php if (!empty($user['photo_url'])): ?>
                 <div class="current-photo">
                     <img
-                        src="../<?php echo htmlspecialchars($user['photo_url']); ?>"
+                        src="../../<?php echo htmlspecialchars($user['photo_url']); ?>"
                         alt="<?php echo htmlspecialchars($user['name']); ?>"
                         class="user-photo-large">
                     <small>Foto atual</small>
@@ -185,7 +185,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             <!-- FORMULÁRIO DE EDIÇÃO -->
             <form
                 id="formEditar"
-                action="process_edit_user.php"
+                action="../process_edit_user.php"
                 method="POST"
                 enctype="multipart/form-data"
                 class="register-form">
@@ -405,7 +405,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 </button>
 
                 <!-- BOTÃO VOLTAR À LISTA -->
-                <a href="users_consultar.php" class="btn-submit" style="text-align: center; text-decoration: none; margin-top: 10px; display: block; background: #6c757d;">
+                <a href="users_consult.php" class="btn-submit" style="text-align: center; text-decoration: none; margin-top: 10px; display: block; background: #6c757d;">
                     <i class="fa-solid fa-arrow-left"></i>
                     Voltar à Lista
                 </a>
@@ -454,8 +454,8 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     </div>
 
     <!-- SCRIPTS -->
-    <script src="js/menu.js"></script>
-    <script src="js/mask.js"></script>
+    <script src="../js/menu.js"></script>
+    <script src="../js/mask.js"></script>
     <script>
         /*
         |--------------------------------------------------------------------------
