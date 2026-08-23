@@ -256,14 +256,14 @@ body {
     .button-password,
     .button-conecte-se { padding: 8px; margin-bottom: 8px; }
 
-    .truck { max-width: 180px; }
+    .truck { max-width: 230px; }
     .wheel {
-        width: 36px;
-        height: 36px;
-        top: 72px;
+        width: 46px;
+        height: 46px;
+        top: 92px;
     }
-    .wheel-back  { left: 24px; }
-    .wheel-front { right: 20px; }
+    .wheel-back  { left: 31px; }
+    .wheel-front { right: 26px; }
 
     .truck-container { bottom: 100px; }
 }
