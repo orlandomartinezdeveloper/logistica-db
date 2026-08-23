@@ -104,7 +104,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <meta charset="UTF-8">
     <title>Calebito - Editar Usuário</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../../img/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
 
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css?v=3">
@@ -116,7 +116,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
-            <img src="../../../img/logo-light.svg" alt="Calebito" class="logo">
+            <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
             <div class="title">
                 Sistema Inteligente de Gestão de Frotas
                 <small>Version: Beta 0.5</small>
