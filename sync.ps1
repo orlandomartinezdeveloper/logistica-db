@@ -27,20 +27,25 @@ $excludeDirs = @("img", ".git", "node_modules")
 # ============================================================
 
 function Convert-RepoToXampp {
-    param([string]$content)
-    # Config require
-    $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../config.php'"
-    $content = $content -replace 'require\s+"\/home\/calebito\/config\.php"', "require __DIR__ . ''/../config.php''"
-    # Imágenes
+    param([string]$content, [string]$RelativePath = "")
+    # Config require (subfolder: dashboard/users/ needs ../../config.php)
+    if ($RelativePath -like "dashboard\users\*") {
+        $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../../config.php'"
+    } else {
+        $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../config.php'"
+    }
+    # Imágenes: subfolder (dashboard/users/) → first handle triple
+    $content = $content -replace "\.\.\/\.\.\/\.\.\/img\/", "../../img/"
+    # Imágenes: standard (dashboard/)
     $content = $content -replace "\.\.\/\.\.\/img\/", "../img/"
     return $content
 }
 
 function Convert-XamppToRepo {
-    param([string]$content)
-    # Config require
+    param([string]$content, [string]$RelativePath = "")
+    # Config require (both depths)
+    $content = $content -replace "require\s+__DIR__\s*\.\s*'\/\.\.\/\.\.\/config\.php'", "require '/home/calebito/config.php'"
     $content = $content -replace "require\s+__DIR__\s*\.\s*'\/\.\.\/config\.php'", "require '/home/calebito/config.php'"
-    $content = $content -replace 'require\s+__DIR__\s*\.\s*"\/\.\.\/config\.php"', "require '/home/calebito/config.php'"
     # Imágenes
     $content = $content -replace "\.\.\/img\/", "../../img/"
     return $content
@@ -121,7 +126,7 @@ function Sync-Direction {
         }
 
         $content = Get-Content $file.FullName -Raw -Encoding UTF8
-        $newContent = & $Converter $content
+        $newContent = & $Converter $content $relativePath
         [System.IO.File]::WriteAllText($destFile, $newContent, (New-Object System.Text.UTF8Encoding $false))
 
         if ($status -eq "CREADO") { $created += $relativePath }
@@ -171,9 +176,9 @@ if (-not $Direction) {
 Write-Host "`nIniciando sincronizacion..." -ForegroundColor Cyan
 
 if ($Direction -eq "repo-to-xampp") {
-    Sync-Direction -Source $repoPath -Destination $xamppPath -DirectionName "Repo -> XAMPP" -Converter { Convert-RepoToXampp $args[0] }
+    Sync-Direction -Source $repoPath -Destination $xamppPath -DirectionName "Repo -> XAMPP" -Converter { Convert-RepoToXampp $args[0] $args[1] }
 } else {
-    Sync-Direction -Source $xamppPath -Destination $repoPath -DirectionName "XAMPP -> Repo" -Converter { Convert-XamppToRepo $args[0] }
+    Sync-Direction -Source $xamppPath -Destination $repoPath -DirectionName "XAMPP -> Repo" -Converter { Convert-XamppToRepo $args[0] $args[1] }
 }
 
 Write-Host "`nSincronizacion completada." -ForegroundColor Cyan

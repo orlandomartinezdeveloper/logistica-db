@@ -8,7 +8,7 @@ session_start();
 */
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -240,7 +240,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
         $newWidth, $newHeight
     );
 
-    $uploadDir = __DIR__ . "/../img/users/";
+    $uploadDir = __DIR__ . "/../../img/users/";
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
@@ -266,7 +266,7 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
     $oldPhoto->close();
 
     if (!empty($oldData['photo_url']) && strpos($oldData['photo_url'], 'img/users/') === 0) {
-        $oldPath = __DIR__ . "/../" . $oldData['photo_url'];
+        $oldPath = __DIR__ . "/../../" . $oldData['photo_url'];
         if (file_exists($oldPath)) {
             unlink($oldPath);
         }

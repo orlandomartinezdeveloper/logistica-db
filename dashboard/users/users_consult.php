@@ -109,7 +109,7 @@ $current_user_id = (int)$_SESSION['user_id'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="../../../img/favicon.png?v=2">
 
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css?v=3">
@@ -120,7 +120,7 @@ $current_user_id = (int)$_SESSION['user_id'];
     <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
-            <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
+            <img src="../../../img/logo-light.svg" alt="Calebito" class="logo">
 
             <div class="title">
                 Sistema Inteligente de Gestão de Frotas
@@ -149,7 +149,7 @@ $current_user_id = (int)$_SESSION['user_id'];
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Status das Tarefas</a>
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
-                <a class="active" href="../users.php"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a class="active" href="users.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
@@ -457,7 +457,7 @@ $current_user_id = (int)$_SESSION['user_id'];
 
             <div class="modal-actions">
                 <!-- OPÇÃO: DESLIGAR O FUNCIONÁRIO (muda status para inativo) -->
-                <form method="POST" action="../process_delete_user.php" id="formDeactivate">
+                <form method="POST" action="process_delete_user.php" id="formDeactivate">
                     <input type="hidden" name="user_id" id="deactivateUserId">
                     <input type="hidden" name="action" value="deactivate">
                     <button type="submit" class="modal-btn modal-btn-deactivate">
@@ -470,7 +470,7 @@ $current_user_id = (int)$_SESSION['user_id'];
                 </form>
 
                 <!-- OPÇÃO: EXCLUIR DEFINITIVAMENTE (remove do banco de dados) -->
-                <form method="POST" action="../process_delete_user.php" id="formDelete">
+                <form method="POST" action="process_delete_user.php" id="formDelete">
                     <input type="hidden" name="user_id" id="deleteUserId">
                     <input type="hidden" name="action" value="delete">
                     <button type="submit" class="modal-btn modal-btn-delete">
@@ -510,7 +510,7 @@ $current_user_id = (int)$_SESSION['user_id'];
             </p>
 
             <!-- FORMULÁRIO DE MUDANÇA DE STATUS -->
-            <form method="POST" action="../process_change_status.php" id="formStatus">
+                <form method="POST" action="process_change_status.php" id="formStatus">
                 <input type="hidden" name="user_id" id="statusUserId">
 
                 <!-- LISTA DESPLEGABLE DE STATUS -->

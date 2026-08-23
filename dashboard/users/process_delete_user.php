@@ -8,7 +8,7 @@ session_start();
 */
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -110,7 +110,7 @@ if ($action === 'delete') {
     $photoStmt->close();
 
     if (!empty($photoData['photo_url']) && strpos($photoData['photo_url'], 'img/users/') === 0) {
-        $photoPath = __DIR__ . "/../" . $photoData['photo_url'];
+        $photoPath = __DIR__ . "/../../" . $photoData['photo_url'];
         if (file_exists($photoPath)) {
             unlink($photoPath);
         }

@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -63,19 +63,19 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
     <meta charset="UTF-8">
     <title>Registrar Usuário - Calebito</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="../../../img/favicon.png?v=2">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css?v=3">
-    <link rel="stylesheet" href="css/register.css">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css?v=3">
+    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
 </head>
 <body>
 
     <!-- HEADER -->
     <header class="header">
         <div class="header-left">
-            <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
+            <img src="../../../img/logo-light.svg" alt="Calebito" class="logo">
             <div class="title">
                 Sistema Inteligente de Gestão de Frotas
                 <small>Version: Beta 0.5</small>
@@ -95,7 +95,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
         <aside class="sidebar">
 
             <nav>
-                <a href="index.php"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="../index.php"><i class="fa-solid fa-house"></i> Início</a>
                 <a href="#"><i class="fa-solid fa-inbox"></i> Caixa de Entrada</a>
                 <a href="#"><i class="fa-solid fa-calendar-days"></i> Calendário</a>
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
@@ -107,7 +107,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-            <a href="../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            <a href="../../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </aside>
 
         <!-- MAIN CONTENT -->
@@ -374,8 +374,8 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
     </div>
 
     <!-- JS -->
-    <script src="js/menu.js"></script>
-    <script src="js/mask.js"></script>
+    <script src="../js/menu.js"></script>
+    <script src="../js/mask.js"></script>
 
 </body>
 </html>

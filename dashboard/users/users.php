@@ -9,7 +9,7 @@ session_start();
 */
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -29,18 +29,18 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="../../../img/favicon.png?v=2">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css?v=3">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css?v=3">
+    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
 </head>
 <body>
 
     <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
-            <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
+            <img src="../../../img/logo-light.svg" alt="Calebito" class="logo">
 
             <div class="title">
                 Sistema Inteligente de Gestão de Frotas
@@ -63,7 +63,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
         <!-- BARRA LATERAL -->
         <aside class="sidebar">
             <nav>
-                <a href="index.php"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="../index.php"><i class="fa-solid fa-house"></i> Início</a>
                 <a href="#"><i class="fa-solid fa-inbox"></i> Caixa de Entrada</a>
                 <a href="#"><i class="fa-solid fa-calendar-days"></i> Calendário</a>
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
@@ -75,7 +75,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
-            <a href="../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            <a href="../../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
@@ -98,7 +98,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 </a>
 
                 <!-- Botão: Consultar, editar e excluir usuários -->
-                <a href="users/users_consult.php" class="action-btn btn-search">
+                <a href="users_consult.php" class="action-btn btn-search">
                     <span class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                     <span class="action-text">
                         <strong>Consultar</strong>
@@ -111,6 +111,6 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     </div>
 
     <!-- SCRIPTS -->
-    <script src="js/menu.js"></script>
+    <script src="../js/menu.js"></script>
 </body>
 </html>

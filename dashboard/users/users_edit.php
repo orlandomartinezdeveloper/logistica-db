@@ -104,7 +104,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <meta charset="UTF-8">
     <title>Calebito - Editar Usuário</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../img/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="../../../img/favicon.png?v=2">
 
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css?v=3">
@@ -116,7 +116,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
     <!-- CABEÇALHO -->
     <header class="header">
         <div class="header-left">
-            <img src="../../img/logo-light.svg" alt="Calebito" class="logo">
+            <img src="../../../img/logo-light.svg" alt="Calebito" class="logo">
             <div class="title">
                 Sistema Inteligente de Gestão de Frotas
                 <small>Version: Beta 0.5</small>
@@ -143,7 +143,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a href="#"><i class="fa-solid fa-list-check"></i> Asignar Tarefas</a>
                 <a href="#"><i class="fa-solid fa-chart-line"></i> Status das Tarefas</a>
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
-                <a class="active" href="../users.php"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a class="active" href="users.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
@@ -185,7 +185,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
             <!-- FORMULÁRIO DE EDIÇÃO -->
             <form
                 id="formEditar"
-                action="../process_edit_user.php"
+                action="process_edit_user.php"
                 method="POST"
                 enctype="multipart/form-data"
                 class="register-form">
