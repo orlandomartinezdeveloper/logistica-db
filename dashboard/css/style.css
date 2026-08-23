@@ -851,11 +851,17 @@ body.no-scroll {
 
 /* Colunas: 1=Foto 2=Nome 3=Sobrenome 4=E-mail 5=Telefone 6=Função 7=Status 8=Ações */
 
-/* ≤ 1366px: ocultar E-mail */
+/* ≤ 1366px: ocultar E-mail + botões Excluir/Status abaixo */
 @media (max-width: 1366px) {
     .users-table th:nth-child(4),
     .users-table td:nth-child(4) {
         display: none;
+    }
+
+    .btn-action-group {
+        flex-wrap: wrap;
+        gap: 4px;
+        max-width: 180px;
     }
 }
 
