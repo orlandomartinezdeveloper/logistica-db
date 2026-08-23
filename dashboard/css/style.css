@@ -859,9 +859,9 @@ body.no-scroll {
     }
 
     .btn-action-group {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 4px;
-        max-width: 180px;
     }
 }
 
