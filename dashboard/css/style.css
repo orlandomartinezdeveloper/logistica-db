@@ -917,8 +917,8 @@ body.no-scroll {
     }
 }
 
-/* ≤ 1014px: ocultar Status */
-@media (max-width: 1014px) {
+/* ≤ 1107px: ocultar Status */
+@media (max-width: 1107px) {
     .users-table th:nth-child(7),
     .users-table td:nth-child(7) {
         display: none;
