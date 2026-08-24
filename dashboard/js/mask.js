@@ -83,6 +83,22 @@ document.addEventListener('DOMContentLoaded', function() {
     */
     const camposCep = document.querySelectorAll('input[name="cep"]');
 
+    /* Rastrear edição manual do campo endereço */
+    const addressField = document.getElementById('address');
+    if (addressField) {
+        addressField.addEventListener('input', function() {
+            this.dataset.userEdited = 'true';
+        });
+        /* Resetar quando o CEP mudar (novo CEP = novo auto-fill) */
+        camposCep.forEach(function(campo) {
+            campo.addEventListener('input', function() {
+                if (addressField) {
+                    addressField.dataset.userEdited = 'false';
+                }
+            });
+        });
+    }
+
     camposCep.forEach(function(campo) {
         campo.addEventListener('input', function() {
             let valor = this.value.replace(/\D/g, '');
@@ -112,6 +128,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const addressField = document.getElementById('address');
             if (!addressField) return;
+
+            /* Não sobrescrever se o usuário editou manualmente */
+            if (addressField.dataset.userEdited === 'true') return;
 
             addressField.value = 'Buscando endereço...';
             addressField.style.opacity = '0.6';

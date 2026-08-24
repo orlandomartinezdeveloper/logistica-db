@@ -28,16 +28,19 @@ $excludeDirs = @("img", ".git", "node_modules")
 
 function Convert-RepoToXampp {
     param([string]$content, [string]$RelativePath = "")
-    # Config require (subfolder: dashboard/users/ needs ../../config.php)
-    if ($RelativePath -like "dashboard\users\*") {
+    # Config require (subfolder: dashboard/users/ or dashboard/vehicles/ needs ../../config.php)
+    if ($RelativePath -like "dashboard\users\*" -or $RelativePath -like "dashboard\vehicles\*") {
         $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../../config.php'"
     } else {
         $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../config.php'"
     }
-    # Imágenes: subfolder (dashboard/users/) → first handle triple
-    $content = $content -replace "\.\.\/\.\.\/\.\.\/img\/", "../../img/"
-    # Imágenes: standard (dashboard/)
-    $content = $content -replace "\.\.\/\.\.\/img\/", "../img/"
+    # Imágenes: subfolder (dashboard/users/ or dashboard/vehicles/) → triple to double
+    if ($RelativePath -like "dashboard\users\*" -or $RelativePath -like "dashboard\vehicles\*") {
+        $content = $content -replace "\.\.\/\.\.\/\.\.\/img\/", "../../img/"
+    } else {
+        # Imágenes: standard (dashboard/) → double to single
+        $content = $content -replace "\.\.\/\.\.\/img\/", "../img/"
+    }
     return $content
 }
 
@@ -56,12 +59,12 @@ function Convert-XamppToRepo {
 # ============================================================
 
 function Test-FilesEqual {
-    param([string]$Path1, [string]$Path2)
+    param([string]$Path1, [string]$Path2, [string]$RelativePath = "")
     $c1 = Get-Content $Path1 -Raw -Encoding UTF8
     $c2 = Get-Content $Path2 -Raw -Encoding UTF8
     # Normalizar: aplicar ambas conversiones y comparar
-    $norm1 = Convert-RepoToXampp $c1
-    $norm2 = Convert-RepoToXampp $c2
+    $norm1 = Convert-RepoToXampp $c1 $RelativePath
+    $norm2 = Convert-RepoToXampp $c2 $RelativePath
     return ($norm1 -eq $norm2)
 }
 
@@ -116,7 +119,7 @@ function Sync-Direction {
         }
 
         if (Test-Path $destFile) {
-            if (Test-FilesEqual $file.FullName $destFile) {
+            if (Test-FilesEqual $file.FullName $destFile $relativePath) {
                 $skipped += $relativePath
                 continue
             }

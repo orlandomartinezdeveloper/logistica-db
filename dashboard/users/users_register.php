@@ -46,6 +46,7 @@ $errorMessages = [
     'upload_error'         => 'Ocorreu um erro ao enviar a foto. Tente novamente.',
     'image_too_large'      => 'A foto enviada é muito grande (máximo 5MB).',
     'invalid_image'        => 'O arquivo enviado não é uma imagem válida (use JPG, JPEG, PNG ou WEBP).',
+    'password_mismatch'    => 'As senhas não conferem. Digite a mesma senha nos dois campos.',
     'server_error'          => 'Erro no servidor ao cadastrar usuário. Tente novamente.',
 ];
 
@@ -103,7 +104,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
                 <a class="active" href="users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
-                <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../vehicles/vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
@@ -154,6 +155,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         id="name"
                         name="name"
                         required
+                        maxlength="100"
                         value="<?= old('name', $old) ?>"
                         placeholder="Digite o nome">
                 </div>
@@ -170,6 +172,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         id="lastname"
                         name="lastname"
                         required
+                        maxlength="100"
                         value="<?= old('lastname', $old) ?>"
                         placeholder="Digite o sobrenome">
                 </div>
@@ -186,6 +189,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         id="username"
                         name="username"
                         required
+                        maxlength="50"
                         value="<?= old('username', $old) ?>"
                         placeholder="Ex: joao.silva"
                         class="lowercase-input">
@@ -222,6 +226,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         id="email"
                         name="email"
                         required
+                        maxlength="255"
                         value="<?= old('email', $old) ?>"
                         placeholder="exemplo@email.com">
                 </div>
@@ -286,6 +291,7 @@ if (isset($_GET['error']) && isset($errorMessages[$_GET['error']])) {
                         id="address"
                         name="address"
                         required
+                        maxlength="255"
                         value="<?= old('address', $old) ?>"
                         placeholder="Preenchido automaticamente pelo CEP">
                 </div>

@@ -151,7 +151,7 @@ $current_user_id = (int)$_SESSION['user_id'];
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
                 <a class="active" href="users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
-                <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../vehicles/vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 

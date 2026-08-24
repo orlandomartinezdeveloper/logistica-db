@@ -60,7 +60,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
                 <a href="users/users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
-                <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="vehicles/vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 

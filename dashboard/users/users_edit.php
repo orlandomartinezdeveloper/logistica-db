@@ -55,6 +55,7 @@ $errorMessages = [
     'invalid_image'      => 'O arquivo enviado não é uma imagem válida (use JPG, JPEG, PNG ou WEBP).',
     'server_error'       => 'Erro no servidor ao atualizar usuário. Tente novamente.',
     'user_not_found'     => 'Usuário não encontrado.',
+    'password_mismatch'  => 'As senhas não conferem. Digite a mesma senha nos dois campos.',
 ];
 
 $errorMessage = null;
@@ -145,7 +146,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a href="#"><i class="fa-solid fa-plus"></i> Criar Tarefa</a>
                 <a class="active" href="users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
-                <a href="#"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../vehicles/vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
@@ -191,7 +192,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 class="register-form">
 
                 <!-- ID oculto do usuário -->
-                <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user['id']); ?>">
 
                 <!-- Nome -->
                 <div class="form-group">
@@ -204,6 +205,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         id="name"
                         name="name"
                         required
+                        maxlength="100"
                         value="<?php echo htmlspecialchars($user['name']); ?>"
                         placeholder="Digite o nome">
                 </div>
@@ -219,6 +221,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         id="lastname"
                         name="lastname"
                         required
+                        maxlength="100"
                         value="<?php echo htmlspecialchars($user['lastname']); ?>"
                         placeholder="Digite o sobrenome">
                 </div>
@@ -234,6 +237,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         id="username"
                         name="username"
                         required
+                        maxlength="50"
                         value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>"
                         placeholder="Ex: joao.silva"
                         class="lowercase-input">
@@ -267,6 +271,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         id="email"
                         name="email"
                         required
+                        maxlength="255"
                         value="<?php echo htmlspecialchars($user['email']); ?>"
                         placeholder="exemplo@email.com">
                 </div>
@@ -327,6 +332,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         id="address"
                         name="address"
                         required
+                        maxlength="255"
                         value="<?php echo htmlspecialchars($user['address']); ?>"
                         placeholder="Preenchido automaticamente pelo CEP">
                 </div>
@@ -396,6 +402,20 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                         name="password"
                         placeholder="Mínimo 6 caracteres">
                     <small>🔒 Mínimo 6 caracteres. Só preencha quiser alterar.</small>
+                </div>
+
+                <!-- Confirmar Nova Senha -->
+                <div class="form-group">
+                    <label for="confirm_password">
+                        <i class="fa-solid fa-check-circle"></i>
+                        Confirmar Nova Senha:
+                    </label>
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Digite a senha novamente">
+                    <small>Preencha somente se estiver alterando a senha.</small>
                 </div>
 
                 <!-- BOTÃO ATUALIZAR (abre modal de confirmação) -->

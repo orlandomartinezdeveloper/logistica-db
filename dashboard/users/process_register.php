@@ -17,7 +17,7 @@ if ($conn->connect_error) {
     exit();
 }
 
-$conn->set_charset("utf8mb4");
+$conn->set_charset(DB_CHARSET);
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ $cnh        = trim($_POST['cnh'] ?? '');
 
 $password   = $_POST['password'] ?? '';
 $confirm    = $_POST['confirm_password'] ?? '';
-$role       = $_POST['role'] ?? 'user';
+$role       = $_POST['role'] ?? 'motorista';
 
 /*
 |--------------------------------------------------------------------------

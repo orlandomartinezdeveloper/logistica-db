@@ -37,23 +37,24 @@ $conn->set_charset(DB_CHARSET);
 |--------------------------------------------------------------------------
 */
 
-$userId   = (int)($_POST['user_id'] ?? 0);
-$name     = trim($_POST['name'] ?? '');
-$lastname = trim($_POST['lastname'] ?? '');
-$username = strtolower(trim($_POST['username'] ?? ''));
-$email    = trim($_POST['email'] ?? '');
-$birthDay = trim($_POST['birth_day'] ?? '');
-$phone    = trim($_POST['phone'] ?? '');
-$cep      = trim($_POST['cep'] ?? '');
-$address  = trim($_POST['address'] ?? '');
-$cnh      = trim($_POST['cnh'] ?? '');
-$role     = trim($_POST['role'] ?? '');
-$status   = trim($_POST['status'] ?? 'ativo');
-$password = $_POST['password'] ?? '';
+$userId          = (int)($_POST['user_id'] ?? 0);
+$name            = trim($_POST['name'] ?? '');
+$lastname        = trim($_POST['lastname'] ?? '');
+$username        = strtolower(trim($_POST['username'] ?? ''));
+$email           = trim($_POST['email'] ?? '');
+$birthDay        = trim($_POST['birth_day'] ?? '');
+$phone           = trim($_POST['phone'] ?? '');
+$cep             = trim($_POST['cep'] ?? '');
+$address         = trim($_POST['address'] ?? '');
+$cnh             = trim($_POST['cnh'] ?? '');
+$role            = trim($_POST['role'] ?? '');
+$status          = trim($_POST['status'] ?? 'ativo');
+$password        = $_POST['password'] ?? '';
+$confirmPassword = $_POST['confirm_password'] ?? '';
 
 /*
 |--------------------------------------------------------------------------
-| VALIDAÇÕES
+| VALIDAÇÕES (ANTES de qualquer processamento de arquivo)
 |--------------------------------------------------------------------------
 */
 
@@ -114,6 +115,28 @@ if (empty($cnh)) {
 
 /*
 |--------------------------------------------------------------------------
+| VALIDAR SENHA (se preenchida) — ANTES do upload de foto
+|--------------------------------------------------------------------------
+*/
+
+$passwordHash = null;
+
+if (!empty($password)) {
+    if (strlen($password) < 6) {
+        header("Location: users_edit.php?id=$userId&error=password_short");
+        exit();
+    }
+
+    if ($password !== $confirmPassword) {
+        header("Location: users_edit.php?id=$userId&error=password_mismatch");
+        exit();
+    }
+
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+}
+
+/*
+|--------------------------------------------------------------------------
 | VERIFICAR E-MAIL (excluindo o próprio usuário)
 |--------------------------------------------------------------------------
 */
@@ -150,7 +173,7 @@ $checkUser->close();
 
 /*
 |--------------------------------------------------------------------------
-| UPLOAD DA FOTO (campo opcional)
+| UPLOAD DA FOTO (campo opcional) — SÓ DEPOIS de todas as validações
 |--------------------------------------------------------------------------
 */
 
@@ -281,82 +304,66 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
 |--------------------------------------------------------------------------
 */
 
-if ($photo_url !== null) {
-    // Com foto nova
-    if (!empty($password)) {
-        // Com senha nova
-        if (strlen($password) < 6) {
-            header("Location: users_edit.php?id=$userId&error=password_short");
-            exit();
-        }
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("
-            UPDATE users SET
-                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
-                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
-                status = ?, photo_url = ?, password_hash = ?
-            WHERE id = ?
-        ");
-        $stmt->bind_param(
-            "sssssssssssssi",
-            $name, $lastname, $username, $email, $birthDay,
-            $phone, $cep, $address, $cnh, $role,
-            $status, $photo_url, $password_hash, $userId
-        );
-    } else {
-        // Sem senha nova
-        $stmt = $conn->prepare("
-            UPDATE users SET
-                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
-                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
-                status = ?, photo_url = ?
-            WHERE id = ?
-        ");
-        $stmt->bind_param(
-            "ssssssssssssi",
-            $name, $lastname, $username, $email, $birthDay,
-            $phone, $cep, $address, $cnh, $role,
-            $status, $photo_url, $userId
-        );
-    }
+if ($photo_url !== null && $passwordHash !== null) {
+    // Foto nova + senha nova
+    $stmt = $conn->prepare("
+        UPDATE users SET
+            name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+            phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
+            status = ?, photo_url = ?, password_hash = ?
+        WHERE id = ?
+    ");
+    $stmt->bind_param(
+        "sssssssssssssi",
+        $name, $lastname, $username, $email, $birthDay,
+        $phone, $cep, $address, $cnh, $role,
+        $status, $photo_url, $passwordHash, $userId
+    );
+} elseif ($photo_url !== null) {
+    // Foto nova + sem senha
+    $stmt = $conn->prepare("
+        UPDATE users SET
+            name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+            phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
+            status = ?, photo_url = ?
+        WHERE id = ?
+    ");
+    $stmt->bind_param(
+        "ssssssssssssi",
+        $name, $lastname, $username, $email, $birthDay,
+        $phone, $cep, $address, $cnh, $role,
+        $status, $photo_url, $userId
+    );
+} elseif ($passwordHash !== null) {
+    // Sem foto + senha nova
+    $stmt = $conn->prepare("
+        UPDATE users SET
+            name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+            phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
+            status = ?, password_hash = ?
+        WHERE id = ?
+    ");
+    $stmt->bind_param(
+        "ssssssssssssi",
+        $name, $lastname, $username, $email, $birthDay,
+        $phone, $cep, $address, $cnh, $role,
+        $status, $passwordHash, $userId
+    );
 } else {
-    // Sem foto nova
-    if (!empty($password)) {
-        // Com senha nova
-        if (strlen($password) < 6) {
-            header("Location: users_edit.php?id=$userId&error=password_short");
-            exit();
-        }
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("
-            UPDATE users SET
-                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
-                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
-                status = ?, password_hash = ?
-            WHERE id = ?
-        ");
-        $stmt->bind_param(
-            "ssssssssssssi",
-            $name, $lastname, $username, $email, $birthDay,
-            $phone, $cep, $address, $cnh, $role,
-            $status, $password_hash, $userId
-        );
-    } else {
-        // Sem senha nova
-        $stmt = $conn->prepare("
-            UPDATE users SET
-                name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
-                phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
-                status = ?
-            WHERE id = ?
-        ");
-        $stmt->bind_param(
-            "sssssssssssi",
-            $name, $lastname, $username, $email, $birthDay,
-            $phone, $cep, $address, $cnh, $role,
-            $status, $userId
-        );
-    }
+    // Sem foto + sem senha
+    $stmt = $conn->prepare("
+        UPDATE users SET
+            name = ?, lastname = ?, username = ?, email = ?, birth_day = ?,
+            phone = ?, cep = ?, address = ?, cnh = ?, role = ?,
+            status = ?
+        WHERE id = ?
+    ");
+    $stmt->bind_param(
+        "sssssssssssi",
+        $name, $lastname, $username, $email, $birthDay,
+        $phone, $cep, $address, $cnh, $role,
+        $status, $userId
+    );
 }
 
 if ($stmt->execute()) {
