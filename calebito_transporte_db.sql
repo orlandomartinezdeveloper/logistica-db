@@ -1,9 +1,9 @@
-﻿-- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dump
 -- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 17-08-2026 a las 23:11:35
+-- Tiempo de generación: 30-08-2026 a las 17:38:33
 -- Versión del servidor: 5.7.44
 -- Versión de PHP: 8.1.34
 
@@ -132,6 +132,8 @@ CREATE TABLE `stores` (
   `address` varchar(255) DEFAULT NULL,
   `city` varchar(100) DEFAULT NULL,
   `state` varchar(50) DEFAULT NULL,
+  `latitude` decimal(10,7) DEFAULT NULL,
+  `longitude` decimal(10,7) DEFAULT NULL,
   `maps_url` varchar(255) DEFAULT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -202,15 +204,13 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `lastname`, `phone`, `address`, `cnh`, `email`, `birth_day`, `role`, `status`, `password_hash`, `photo_url`, `created_at`, `updated_at`, `reset_token`, `reset_expires`) VALUES
-(1, 'Orlando Martinez', '', '22992463411', '', '', 'omjuniormusic@gmail.com', '0000-00-00', 'Motorista', 'ativo', '$2y$10$z.abkzK8/kZ6m7u9ttMrkex9aH.dVDV9HVkymZLEFV0FB5fgAI/qW', NULL, '2026-04-28 17:08:37', '2026-05-25 21:13:27', '4677b98cbd9912465303cf67f0162f2c0a052425711b77e3d886b07323b53fc0', '2026-05-20 01:12:00'),
-(2, 'Michael Exemplo', '', '3423423423', '', '', 'exemplo@exemplo.com', '0000-00-00', 'Motorista', 'ativo', '$2y$10$YViFc6DWL3VlVSh9IvP6f.5m53ze3.RGO9TVRH/ifCSjtDIfCZrUu', NULL, '2026-01-15 03:49:16', '2026-05-25 20:58:47', NULL, NULL),
-(4, 'maria', '', '2299654513', '', '', 'omjuniomusic@gmail.com', '0000-00-00', 'Motorista', 'ativo', '$2y$10$w9nw/c/RlH3DkmMZSHTBieFHEJUlCPvlI7j5ZF58Wa0i9gFcV8z/K', NULL, '2026-05-19 21:41:44', '2026-05-21 22:35:12', 'b5b9cfbf62d3e727d89248fa5189283adebc9f5f852f4460bd2747ea7e6b612e', '2026-05-22 02:35:12'),
-(5, 'sfsdfasd', '', NULL, '', '', 'sdafasd@dsfdf.com', '0000-00-00', 'motorista', 'ativo', '$2y$10$XVRqTVJ3SOb2HR80KpZWLum/ifprPWIV.NMD3FAjhhYOm6youzpEe', NULL, '2026-06-17 21:53:13', '2026-06-17 21:53:13', NULL, NULL),
-(6, 'aaaa', '', NULL, '', '', 'aaa@aaa.com', '0000-00-00', 'gestor_logistica', 'ativo', '$2y$10$QPHqBxfjmwY.E.7xE.9J2Odvw5ic.vLh9zhG3eLGrjTKosoOmBY1q', NULL, '2026-06-17 22:31:27', '2026-06-17 22:31:27', NULL, NULL),
-(7, 'xxxx', '', '21343254534', '', '', 'xxx@xxx.com', '0000-00-00', 'gestor_eventos', 'ativo', '$2y$10$r2KWPopLdMjW9W55QXCTtu.DZNlrE2Q4.w/zJVI/ZKgHaIFkl9Edy', NULL, '2026-06-17 22:36:40', '2026-06-17 22:36:40', NULL, NULL),
-(8, 'aaaaaaaaa', 'bbbbbbbbbb', '32423423', 'fsdfdsafd', 'a', 'asdasdas@asadasd.com', '3333-12-12', 'motorista', 'ativo', '$2y$10$uRHkbvLafw3WT9AEEXXQ0O06M/OXehfRDEkJuEZvust3jRJHRTjUO', '', '2026-08-11 22:37:50', '2026-08-11 22:37:50', NULL, NULL),
-(9, 'xxxxxxxxxx', 'yyyyyyyyyy', '111111111111111', 'dsfsdfsdfsdfsdf', 'a', 'asdasd@sadas.com', '0000-00-00', 'motorista', 'ativo', '$2y$10$1S2Y4OJbG77rHeHUJ/s1oegzIzAc3kvUSnbEKFwjEVUw361uOv6ZG', '', '2026-08-11 22:58:11', '2026-08-11 22:58:11', NULL, NULL);
+INSERT INTO `users` (`id`, `name`, `lastname`, `username`, `phone`, `cep`, `address`, `cnh`, `email`, `birth_day`, `role`, `status`, `password_hash`, `photo_url`, `created_at`, `updated_at`, `reset_token`, `reset_expires`) VALUES
+(1, 'Orlando', 'Martinez', 'orlando', '(22) 99246-3411', '27965-055', 'Avenida Otoniel Gomes Tavares, Bloco 5, Apto 204, São José do Barreto- Macaé/RJ', 'E', 'omjuniormusic@gmail.com', '1982-03-28', 'motorista', 'ativo', '$2y$10$UZ6FBMQ.Qrmr3sykTMV1MubBjbqSD/Fj3u0O32WMTw2tgOsM7h.EW', 'img/users/user_6a83d4fd46df51.46191820.jpg', '2026-04-28 17:08:37', '2026-08-23 22:05:08', '4677b98cbd9912465303cf67f0162f2c0a052425711b77e3d886b07323b53fc0', '2026-05-20 01:12:00'),
+(19, 'Leonardo', 'Vinicius Cyriaco', 'leonardo', '(22) 99706-1535', '', 'Parque Aeroporto', 'D', 'cyriacoleonardo53@gmail.com', '1984-11-13', 'motorista', 'ativo', '$2y$10$6cGyQRC.F2K7KI/iCwyLzeoHaEV3x5et3Im6b/PbH3VpgbyYxALkG', 'img/users/user_6a8a03bf69d643.57974274.jpg', '2026-08-21 14:58:18', '2026-08-22 19:42:55', NULL, NULL),
+(20, 'Alex', 'Rodrigues Iacomini', 'alex', '(21) 96429-1030', '', 'Macaé', 'B', 'alexiaco@gmail.com', '1979-07-15', 'gestor_logistica', 'ativo', '$2y$10$wJvYWwJo3pu9TbcH5EOkU.2IZkUPvaY99nuWVGwhbTpID6thXGQBW', 'img/users/user_6a8a036e652c46.05667620.jpg', '2026-08-21 15:02:10', '2026-08-22 17:28:37', NULL, NULL),
+(13, 'Jose', 'Nunes da Silva Junior', 'junior', '(22) 98834-8527', '', 'Macaé', 'nao_tenho', 'soulkalibourjr@gmail.com', '1979-01-07', 'ajudante', 'ativo', '$2y$10$ArjS05hmply6lMFumOHEluMCNCC59sCuUfV6575hT63QPLX4lsuD2', 'img/users/user_6a851545536308.95660235.jpg', '2026-08-18 23:30:29', '2026-08-19 08:02:58', NULL, NULL),
+(15, 'Leilson', 'Silva Gregorio', 'leilson', '(22) 99988-7400', '', 'Lagomar Macaé', 'D', 'netleilson1@gmail.com', '1977-11-19', 'motorista', 'ativo', '$2y$10$Kbz3C5BjIJBcTgo6O4bv9.roHhLUsSqnxLkmXtLVDp8jiKOhEfiFS', 'img/users/user_6a857b6c2d0183.87681421.jpg', '2026-08-19 06:46:20', '2026-08-23 21:57:47', NULL, NULL),
+(16, 'Dyego', 'Alves', 'dyego', '(84) 87526-701', '', 'Lagomar', 'B', 'antoniodyego8@gmail.com', '1991-07-11', 'motorista', 'ativo', '$2y$10$cnT3HelbccRa2KPe4fDFv.MuEngl3rHqmj1a2gfvph3DW7tjGxzDe', 'img/users/user_6a8a035d55f020.21665691.jpg', '2026-08-19 06:52:16', '2026-08-22 17:24:18', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -221,13 +221,42 @@ INSERT INTO `users` (`id`, `name`, `lastname`, `phone`, `address`, `cnh`, `email
 CREATE TABLE `vehicles` (
   `id` int(11) NOT NULL,
   `plate_number` varchar(20) NOT NULL,
+  `fancy_name` varchar(100) DEFAULT NULL,
+  `renavam` varchar(20) DEFAULT NULL,
+  `chassis_number` varchar(20) DEFAULT NULL,
   `model` varchar(100) NOT NULL,
+  `year_model` varchar(4) DEFAULT NULL,
+  `year_manufactured` varchar(4) DEFAULT NULL,
+  `fuel` varchar(30) DEFAULT NULL,
+  `gross_weight` decimal(10,2) DEFAULT NULL,
+  `capacity` decimal(10,2) DEFAULT NULL,
+  `species_type` varchar(50) DEFAULT NULL,
+  `bodywork` varchar(50) DEFAULT NULL,
+  `exercise_year` varchar(4) DEFAULT NULL,
+  `owner_document` varchar(20) DEFAULT NULL,
+  `owner_name` varchar(150) DEFAULT NULL,
+  `power_displacement` varchar(50) DEFAULT NULL,
+  `cmt` decimal(10,2) DEFAULT NULL,
+  `axles` varchar(10) DEFAULT NULL,
+  `occupancy` varchar(20) DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'ativo',
   `current_km` bigint(20) DEFAULT '0',
   `photo_url` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `vehicles`
+--
+
+INSERT INTO `vehicles` (`id`, `plate_number`, `fancy_name`, `renavam`, `chassis_number`, `model`, `year_model`, `year_manufactured`, `fuel`, `gross_weight`, `capacity`, `species_type`, `bodywork`, `exercise_year`, `owner_document`, `owner_name`, `power_displacement`, `cmt`, `axles`, `occupancy`, `status`, `current_km`, `photo_url`, `created_at`, `updated_at`) VALUES
+(1, 'LUE6J73', 'Kia Bongo (UK2500)', '01347060666', '9UWSHX76APN035543', 'I/KIA UK2500 HD SC', '2023', '2022', 'DIESEL', 3.47, 1.81, 'CARGA CAMINHONETE', 'CARROCERIA FECHADA', '2026', '18.069.164/0001-30', 'P L S CORPUS BENT C E S DE S ARTESANAIS', '131CV/2497', 4.87, '2', '03P', 'ativo', 150000, 'img/vehicles/vehicle_6a943b3dae1089.83135439.jpg', '2026-08-23 23:01:02', '2026-08-30 17:22:40'),
+(2, 'TTG7I66', 'Renault Kangoo', '', '', 'RENAULT KANGOO', '', '', '', NULL, NULL, '', '', '', '', '', '', NULL, '', '', 'ativo', 40000, 'img/vehicles/vehicle_6a943b55aec0d5.45762434.jpg', '2026-08-23 23:17:57', '2026-08-30 17:29:49'),
+(3, 'SSD2B95', 'Kia Bongo 2025', '01409707323', '9UWSHX76ASN039852', 'I/KIA UK2500 HD SC 4WD', '2025', '2024', 'Diesel', 3.47, 1.81, 'CARGA CAMINHONETE', 'CARROCERIA FECHADA', '2025', '49.984.157/0001-98', 'CALEBITO I B DE ALIMENTOS LTDA', '130CV/2497', 4.87, '2', '03P', 'ativo', 90000, 'img/vehicles/vehicle_6a943b49377b94.36937861.jpg', '2026-08-25 07:54:38', '2026-08-30 14:33:50'),
+(4, 'TTY8C90', 'Caminhão VW Delivery', '01484336647', '9535E6TB2TR033651', 'VW/DELIVERY 11.180', '2026', '2025', 'Diesel', 10.80, 7.26, 'CARGA CAMINHAO', 'CARROCERIA FECHADA', '2026', '49.984.157/0001-98', 'CALEBITO I B DE ALIMENTOS LTDA', '175CV/3800', 13.20, '2', '03P', 'ativo', 30000, 'img/vehicles/vehicle_6a943b621f7295.47818284.jpg', '2026-08-25 22:56:48', '2026-08-30 14:30:23'),
+(5, 'LML3H28', 'Chevrolet Montana', '01120996535', '9BGCA8030JB115984', 'CHEVROLET/MONTANA LS2', '2018', '2017', 'GASOLINA/ALCOOL/GAS NATURAL', 1.80, 0.70, 'CARGA CAMINHONETE', 'CARROCERIA ABERTA', '2026', '18.069.164/0001-30', 'PLS CORPUS BENT C E S SORV ARTESANAIS', '99CV/1400', 3.00, '*', '02P', 'ativo', 90000, 'img/vehicles/vehicle_6a943b2ca1a9b5.38181525.jpg', '2026-08-26 21:43:15', '2026-08-30 12:39:13'),
+(6, 'LUA5E04', 'Renault Oroch', '01218218557', '93YSR3H5LJ224731', 'RENAULT/OROCH DYN 16 SCE', '2020', '2019', 'GASOLINA/ALCOOL/GAS NATURAL', 1.94, 0.50, 'Especial', 'Aberta', '2026', '18.069.164/0001-30', 'PLS C B S ARTESANAL', '120CV/1599', 2.90, '2', '05P', 'ativo', 60000, 'img/vehicles/vehicle_6a94929f073996.36439212.jpg', '2026-08-30 17:29:19', '2026-08-30 17:29:19');
 
 -- --------------------------------------------------------
 
@@ -431,13 +460,13 @@ ALTER TABLE `task_assignments`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `vehicle_maintenances`

@@ -22,7 +22,7 @@ $errorMessages = [
     'plate_required'     => 'O campo Placa é obrigatório.',
     'plate_invalid'      => 'Formato de placa inválido.',
     'plate_exists'       => 'Esta placa já está cadastrada para outro veículo.',
-    'model_required'     => 'O campo Modelo é obrigatório.',
+    'model_required'     => 'O campo Marca/Modelo é obrigatório.',
     'km_invalid'         => 'A quilometragem deve ser um número positivo.',
     'upload_error'       => 'Ocorreu um erro ao enviar a foto. Tente novamente.',
     'image_too_large'    => 'A foto enviada é muito grande (máximo 5MB).',
@@ -47,7 +47,11 @@ if ($vehicleId <= 0) {
 }
 
 $stmt = $conn->prepare("
-    SELECT id, plate_number, model, status, current_km, photo_url, created_at, updated_at
+    SELECT id, plate_number, fancy_name, renavam, chassis_number, model,
+           year_model, year_manufactured, fuel, gross_weight, capacity,
+           species_type, bodywork, exercise_year, owner_document, owner_name,
+           power_displacement, cmt, axles, occupancy,
+           status, current_km, photo_url, created_at, updated_at
     FROM vehicles
     WHERE id = ?
 ");
@@ -60,6 +64,11 @@ $stmt->close();
 if (!$vehicle) {
     header("Location: vehicles_consult.php?error=vehicle_not_found");
     exit();
+}
+
+function fmtDec($value) {
+    if ($value === null || $value === '') return '';
+    return str_replace('.', ',', (string)$value);
 }
 ?>
 <!DOCTYPE html>
@@ -103,6 +112,7 @@ if (!$vehicle) {
                 <a href="../users/users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a class="active" href="vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../locais/locais_select.php"><i class="fa-solid fa-location-dot"></i> Locais</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
             <a href="../../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
@@ -143,6 +153,24 @@ if (!$vehicle) {
 
                 <input type="hidden" name="vehicle_id" value="<?php echo htmlspecialchars($vehicle['id']); ?>">
 
+                <div class="form-divider"><span>Foto do Veículo</span></div>
+
+                <!-- Nova Foto -->
+                <div class="form-group">
+                    <label for="photo">
+                        <i class="fa-solid fa-image"></i>
+                        Nova Foto (opcional):
+                    </label>
+                    <input
+                        type="file"
+                        id="photo"
+                        name="photo"
+                        accept=".jpg,.jpeg,.png,.webp,image/*">
+                    <small>Formatos permitidos: JPG, JPEG, PNG e WEBP. Máximo 5MB. Deixe vazio para manter a foto atual.</small>
+                </div>
+
+                <div class="form-divider"><span>Identificação</span></div>
+
                 <!-- Placa -->
                 <div class="form-group">
                     <label for="plate_number">
@@ -161,11 +189,11 @@ if (!$vehicle) {
                     <small>Formato brasileiro: ABC-1D23 ou ABC1D23</small>
                 </div>
 
-                <!-- Modelo -->
+                <!-- Marca / Modelo / Versão -->
                 <div class="form-group">
                     <label for="model">
                         <i class="fa-solid fa-truck"></i>
-                        Modelo:
+                        Marca / Modelo / Versão:
                     </label>
                     <input
                         type="text"
@@ -174,27 +202,300 @@ if (!$vehicle) {
                         required
                         maxlength="100"
                         value="<?php echo htmlspecialchars($vehicle['model']); ?>"
-                        placeholder="Ex: Mercedes-Benz Sprinter">
+                        placeholder="Ex: Mercedes-Benz Sprinter 316 CDI">
                 </div>
 
-                <!-- Nova Foto -->
+                <!-- Nome Fantasia -->
                 <div class="form-group">
-                    <label for="photo">
-                        <i class="fa-solid fa-image"></i>
-                        Nova Foto (opcional):
+                    <label for="fancy_name">
+                        <i class="fa-solid fa-id-badge"></i>
+                        Nome Fantasia:
                     </label>
                     <input
-                        type="file"
-                        id="photo"
-                        name="photo"
-                        accept=".jpg,.jpeg,.png,.webp,image/*">
-                    <small>Formatos permitidos: JPG, JPEG, PNG e WEBP. Máximo 5MB. Deixe vazio para manter a foto atual.</small>
+                        type="text"
+                        id="fancy_name"
+                        name="fancy_name"
+                        maxlength="100"
+                        value="<?php echo htmlspecialchars($vehicle['fancy_name']); ?>"
+                        placeholder="Ex: Furgão Entregas">
+                </div>
+
+                <div class="form-divider"><span>Documentação (CRLV)</span></div>
+
+                <!-- RENAVAM -->
+                <div class="form-group">
+                    <label for="renavam">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        RENAVAM:
+                    </label>
+                    <input
+                        type="text"
+                        id="renavam"
+                        name="renavam"
+                        maxlength="20"
+                        value="<?php echo htmlspecialchars($vehicle['renavam']); ?>"
+                        placeholder="Número do RENAVAM">
+                </div>
+
+                <!-- Número do Chassi / VIN -->
+                <div class="form-group">
+                    <label for="chassis_number">
+                        <i class="fa-solid fa-fingerprint"></i>
+                        Número do Chassi / VIN:
+                    </label>
+                    <input
+                        type="text"
+                        id="chassis_number"
+                        name="chassis_number"
+                        maxlength="20"
+                        value="<?php echo htmlspecialchars($vehicle['chassis_number']); ?>"
+                        placeholder="Ex: 9BM958194MB012345"
+                        style="text-transform: uppercase;">
+                </div>
+
+                <!-- Ano Modelo + Ano Fabricação -->
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="year_model">
+                            <i class="fa-solid fa-calendar"></i>
+                            Ano Modelo:
+                        </label>
+                        <input
+                            type="number"
+                            id="year_model"
+                            name="year_model"
+                            min="1900"
+                            max="2100"
+                            value="<?php echo htmlspecialchars($vehicle['year_model']); ?>"
+                            placeholder="Ex: 2024">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year_manufactured">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            Ano Fabricação:
+                        </label>
+                        <input
+                            type="number"
+                            id="year_manufactured"
+                            name="year_manufactured"
+                            min="1900"
+                            max="2100"
+                            value="<?php echo htmlspecialchars($vehicle['year_manufactured']); ?>"
+                            placeholder="Ex: 2023">
+                    </div>
+                </div>
+
+                <!-- Combustível -->
+                <div class="form-group">
+                    <label for="fuel">
+                        <i class="fa-solid fa-gas-pump"></i>
+                        Combustível:
+                    </label>
+                    <select id="fuel" name="fuel">
+                        <option value="">Selecione...</option>
+                        <option value="Diesel" <?php echo $vehicle['fuel'] === 'Diesel' ? 'selected' : ''; ?>>Diesel</option>
+                        <option value="Gasolina" <?php echo $vehicle['fuel'] === 'Gasolina' ? 'selected' : ''; ?>>Gasolina</option>
+                        <option value="Álcool" <?php echo $vehicle['fuel'] === 'Álcool' ? 'selected' : ''; ?>>Álcool</option>
+                        <option value="Flex" <?php echo $vehicle['fuel'] === 'Flex' ? 'selected' : ''; ?>>Flex</option>
+                        <option value="GNV" <?php echo $vehicle['fuel'] === 'GNV' ? 'selected' : ''; ?>>GNV</option>
+                        <option value="GASOLINA/ALCOOL/GAS NATURAL" <?php echo $vehicle['fuel'] === 'GASOLINA/ALCOOL/GAS NATURAL' ? 'selected' : ''; ?>>GASOLINA/ALCOOL/GAS NATURAL</option>
+                        <option value="GASOLINA/GAS NATURAL" <?php echo $vehicle['fuel'] === 'GASOLINA/GAS NATURAL' ? 'selected' : ''; ?>>GASOLINA/GAS NATURAL</option>
+                        <option value="ALCOOL/GAS NATURAL" <?php echo $vehicle['fuel'] === 'ALCOOL/GAS NATURAL' ? 'selected' : ''; ?>>ALCOOL/GAS NATURAL</option>
+                        <option value="Elétrico" <?php echo $vehicle['fuel'] === 'Elétrico' ? 'selected' : ''; ?>>Elétrico</option>
+                        <option value="Híbrido" <?php echo $vehicle['fuel'] === 'Híbrido' ? 'selected' : ''; ?>>Híbrido</option>
+                        <option value="Outro" <?php echo $vehicle['fuel'] === 'Outro' ? 'selected' : ''; ?>>Outro</option>
+                    </select>
+                </div>
+
+                <!-- Exercício -->
+                <div class="form-group">
+                    <label for="exercise_year">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        Exercício:
+                    </label>
+                    <input
+                        type="number"
+                        id="exercise_year"
+                        name="exercise_year"
+                        min="1900"
+                        max="2100"
+                        value="<?php echo htmlspecialchars($vehicle['exercise_year']); ?>"
+                        placeholder="Ex: 2026">
+                    <small>Ano de exercício do licenciamento (CRLV).</small>
+                </div>
+
+                <div class="form-divider"><span>Características Técnicas</span></div>
+
+                <!-- Espécie / Tipo -->
+                <div class="form-group">
+                    <label for="species_type">
+                        <i class="fa-solid fa-shapes"></i>
+                        Espécie / Tipo:
+                    </label>
+                    <select id="species_type" name="species_type">
+                        <option value="">Selecione...</option>
+                        <option value="Passageiro" <?php echo $vehicle['species_type'] === 'Passageiro' ? 'selected' : ''; ?>>Passageiro</option>
+                        <option value="Carga" <?php echo $vehicle['species_type'] === 'Carga' ? 'selected' : ''; ?>>Carga</option>
+                        <option value="Misto" <?php echo $vehicle['species_type'] === 'Misto' ? 'selected' : ''; ?>>Misto</option>
+                        <option value="Especial" <?php echo $vehicle['species_type'] === 'Especial' ? 'selected' : ''; ?>>Especial</option>
+                        <option value="Outro" <?php echo $vehicle['species_type'] === 'Outro' ? 'selected' : ''; ?>>Outro</option>
+                    </select>
+                </div>
+
+                <!-- Carroceria -->
+                <div class="form-group">
+                    <label for="bodywork">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                        Carroceria:
+                    </label>
+                    <select id="bodywork" name="bodywork">
+                        <option value="">Selecione...</option>
+                        <option value="Baú" <?php echo $vehicle['bodywork'] === 'Baú' ? 'selected' : ''; ?>>Baú</option>
+                        <option value="Sider" <?php echo $vehicle['bodywork'] === 'Sider' ? 'selected' : ''; ?>>Sider</option>
+                        <option value="Grade Baixa" <?php echo $vehicle['bodywork'] === 'Grade Baixa' ? 'selected' : ''; ?>>Grade Baixa</option>
+                        <option value="Furgão" <?php echo $vehicle['bodywork'] === 'Furgão' ? 'selected' : ''; ?>>Furgão</option>
+                        <option value="Tanque" <?php echo $vehicle['bodywork'] === 'Tanque' ? 'selected' : ''; ?>>Tanque</option>
+                        <option value="Aberta" <?php echo $vehicle['bodywork'] === 'Aberta' ? 'selected' : ''; ?>>Aberta</option>
+                        <option value="Fechada" <?php echo $vehicle['bodywork'] === 'Fechada' ? 'selected' : ''; ?>>Fechada</option>
+                        <option value="Porta-Container" <?php echo $vehicle['bodywork'] === 'Porta-Container' ? 'selected' : ''; ?>>Porta-Container</option>
+                        <option value="Outro" <?php echo $vehicle['bodywork'] === 'Outro' ? 'selected' : ''; ?>>Outro</option>
+                    </select>
+                </div>
+
+                <!-- Peso Bruto Total + Capacidade -->
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="gross_weight">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            Peso Bruto Total (t):
+                        </label>
+                        <input
+                            type="number"
+                            id="gross_weight"
+                            name="gross_weight"
+                            min="0"
+                            step="0.01"
+                            value="<?php echo htmlspecialchars(fmtDec($vehicle['gross_weight'])); ?>"
+                            placeholder="Ex: 3,50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="capacity">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                            Capacidade (t):
+                        </label>
+                        <input
+                            type="number"
+                            id="capacity"
+                            name="capacity"
+                            min="0"
+                            step="0.01"
+                            value="<?php echo htmlspecialchars(fmtDec($vehicle['capacity'])); ?>"
+                            placeholder="Ex: 1,20">
+                    </div>
+                </div>
+
+                <!-- Potência / Cilindrada -->
+                <div class="form-group">
+                    <label for="power_displacement">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        Potência / Cilindrada:
+                    </label>
+                    <input
+                        type="text"
+                        id="power_displacement"
+                        name="power_displacement"
+                        maxlength="50"
+                        value="<?php echo htmlspecialchars($vehicle['power_displacement']); ?>"
+                        placeholder="Ex: 150 cv / 2143 cc">
+                </div>
+
+                <!-- CMT -->
+                <div class="form-group">
+                    <label for="cmt">
+                        <i class="fa-solid fa-draw-polygon"></i>
+                        CMT (Capacidade Máxima de Tração):
+                    </label>
+                    <input
+                        type="number"
+                        id="cmt"
+                        name="cmt"
+                        min="0"
+                        step="0.01"
+                        value="<?php echo htmlspecialchars(fmtDec($vehicle['cmt'])); ?>"
+                        placeholder="Ex: 5,00">
+                    <small>Valor em toneladas.</small>
+                </div>
+
+                <!-- Eixos + Lotação -->
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="axles">
+                            <i class="fa-solid fa-circle-dot"></i>
+                            Eixos:
+                        </label>
+                        <input
+                            type="number"
+                            id="axles"
+                            name="axles"
+                            min="0"
+                            value="<?php echo htmlspecialchars($vehicle['axles']); ?>"
+                            placeholder="Ex: 2">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="occupancy">
+                            <i class="fa-solid fa-user"></i>
+                            Lotação:
+                        </label>
+                        <input
+                            type="text"
+                            id="occupancy"
+                            name="occupancy"
+                            maxlength="20"
+                            value="<?php echo htmlspecialchars($vehicle['occupancy']); ?>"
+                            placeholder="Ex: 7 passageiros">
+                    </div>
+                </div>
+
+                <div class="form-divider"><span>Proprietário</span></div>
+
+                <!-- CPF / CNPJ -->
+                <div class="form-group">
+                    <label for="owner_document">
+                        <i class="fa-solid fa-id-card"></i>
+                        CPF / CNPJ do Proprietário:
+                    </label>
+                    <input
+                        type="text"
+                        id="owner_document"
+                        name="owner_document"
+                        maxlength="20"
+                        value="<?php echo htmlspecialchars($vehicle['owner_document']); ?>"
+                        placeholder="Ex: 123.456.789-00">
+                </div>
+
+                <!-- Nome Proprietário -->
+                <div class="form-group">
+                    <label for="owner_name">
+                        <i class="fa-solid fa-user-tie"></i>
+                        Nome / Proprietário:
+                    </label>
+                    <input
+                        type="text"
+                        id="owner_name"
+                        name="owner_name"
+                        maxlength="150"
+                        value="<?php echo htmlspecialchars($vehicle['owner_name']); ?>"
+                        placeholder="Nome do proprietário do veículo">
                 </div>
 
                 <!-- Quilometragem -->
+                <div class="form-divider"><span>Quilometragem e Status</span></div>
                 <div class="form-group">
                     <label for="current_km">
-                        <i class="fa-solid fa-gauge-high"></i>
+                        <i class="fa-solid fa-gauge-simple"></i>
                         Quilometragem Atual:
                     </label>
                     <input
@@ -289,7 +590,3 @@ if (!$vehicle) {
     </script>
 </body>
 </html>
-
-<?php
-$conn->close();
-?>

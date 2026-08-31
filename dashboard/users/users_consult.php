@@ -152,6 +152,7 @@ $current_user_id = (int)$_SESSION['user_id'];
                 <a class="active" href="users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="../vehicles/vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../locais/locais_select.php"><i class="fa-solid fa-location-dot"></i> Locais</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 
@@ -205,8 +206,16 @@ $current_user_id = (int)$_SESSION['user_id'];
                 </div>
             <?php endif; ?>
 
-            <!-- TABELA DE USUÁRIOS COM AÇÕES -->
+            <!-- LEGENDA DOS BOTÕES (visível apenas em telas pequenas) -->
             <?php if ($total > 0): ?>
+                <div class="actions-legend">
+                    <span><i class="fa-solid fa-eye"></i> Consultar</span>
+                    <span><i class="fa-solid fa-pen-to-square"></i> Editar</span>
+                    <span><i class="fa-solid fa-trash-can"></i> Excluir</span>
+                    <span><i class="fa-solid fa-toggle-on"></i> Status</span>
+                </div>
+
+            <!-- TABELA DE USUÁRIOS COM AÇÕES -->
                 <table class="users-table">
                     <thead>
                         <tr>

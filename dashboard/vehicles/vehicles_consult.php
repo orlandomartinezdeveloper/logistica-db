@@ -42,7 +42,11 @@ $search = trim($_GET['search'] ?? '');
 
 if (!empty($search)) {
     $stmt = $conn->prepare("
-        SELECT id, plate_number, model, status, current_km, photo_url, created_at, updated_at
+        SELECT id, plate_number, fancy_name, renavam, chassis_number, model,
+               year_model, year_manufactured, fuel, gross_weight, capacity,
+               species_type, bodywork, exercise_year, owner_document, owner_name,
+               power_displacement, cmt, axles, occupancy,
+               status, current_km, photo_url, created_at, updated_at
         FROM vehicles
         WHERE plate_number LIKE ? OR model LIKE ?
         ORDER BY plate_number ASC
@@ -51,7 +55,11 @@ if (!empty($search)) {
     $stmt->bind_param("ss", $like, $like);
 } else {
     $stmt = $conn->prepare("
-        SELECT id, plate_number, model, status, current_km, photo_url, created_at, updated_at
+        SELECT id, plate_number, fancy_name, renavam, chassis_number, model,
+               year_model, year_manufactured, fuel, gross_weight, capacity,
+               species_type, bodywork, exercise_year, owner_document, owner_name,
+               power_displacement, cmt, axles, occupancy,
+               status, current_km, photo_url, created_at, updated_at
         FROM vehicles
         ORDER BY plate_number ASC
     ");
@@ -102,6 +110,7 @@ $total = count($vehicles);
                 <a href="../users/users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a class="active" href="vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../locais/locais_select.php"><i class="fa-solid fa-location-dot"></i> Locais</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
             <a href="../../auth/logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
@@ -150,13 +159,21 @@ $total = count($vehicles);
             <?php endif; ?>
 
             <?php if ($total > 0): ?>
-                <table class="users-table">
+
+                <!-- LEGENDA DOS BOTÕES (visível apenas em telas pequenas) -->
+                <div class="actions-legend">
+                    <span><i class="fa-solid fa-eye"></i> Consultar</span>
+                    <span><i class="fa-solid fa-pen-to-square"></i> Editar</span>
+                    <span><i class="fa-solid fa-trash-can"></i> Excluir</span>
+                    <span><i class="fa-solid fa-toggle-on"></i> Status</span>
+                </div>
+
+                <table class="users-table vehicles-table">
                     <thead>
                         <tr>
                             <th>Foto</th>
                             <th>Placa</th>
-                            <th>Modelo</th>
-                            <th>KM Atual</th>
+                            <th>Nome Fantasia</th>
                             <th>Status</th>
                             <th>Ações</th>
                         </tr>
@@ -169,16 +186,15 @@ $total = count($vehicles);
                                         <img
                                             src="../../<?php echo htmlspecialchars($vehicle['photo_url']); ?>"
                                             alt="<?php echo htmlspecialchars($vehicle['model']); ?>"
-                                            class="user-photo<?php echo $vehicle['status'] === 'desligado' ? ' photo-desligado' : ''; ?>">
+                                            class="vehicle-photo<?php echo $vehicle['status'] === 'desligado' ? ' photo-desligado' : ''; ?>">
                                     <?php else: ?>
-                                        <div class="user-photo-placeholder<?php echo $vehicle['status'] === 'desligado' ? ' photo-desligado' : ''; ?>">
+                                        <div class="vehicle-photo-placeholder<?php echo $vehicle['status'] === 'desligado' ? ' photo-desligado' : ''; ?>">
                                             <i class="fa-solid fa-truck"></i>
                                         </div>
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo htmlspecialchars($vehicle['plate_number']); ?></td>
-                                <td><?php echo htmlspecialchars($vehicle['model']); ?></td>
-                                <td><?php echo number_format($vehicle['current_km'], 0, ',', '.'); ?> km</td>
+                                <td><?php echo htmlspecialchars(!empty($vehicle['fancy_name']) ? $vehicle['fancy_name'] : $vehicle['model']); ?></td>
                                 <td>
                                     <span class="status-badge status-<?php echo $vehicle['status']; ?>">
                                         <?php echo $vehicle['status'] === 'ativo' ? 'Ativo' : 'Inativo'; ?>
@@ -238,15 +254,14 @@ $total = count($vehicles);
             </button>
 
             <div class="consulta-header">
-                <div class="consulta-photo-wrapper">
-                    <img id="consultaFoto" src="" alt="Foto do veículo" class="consulta-photo">
-                    <div id="consultaFotoPlaceholder" class="consulta-photo-placeholder">
+                <div class="vehicle-consulta-photo-wrapper">
+                    <img id="consultaFoto" src="" alt="Foto do veículo" class="vehicle-consulta-photo">
+                    <div id="consultaFotoPlaceholder" class="vehicle-consulta-photo-placeholder">
                         <i class="fa-solid fa-truck"></i>
                     </div>
-                    <span id="consultaStatusBadge" class="consulta-status-dot"></span>
                 </div>
-                <h2 id="consultaPlaca"></h2>
-                <span id="consultaModelo" class="consulta-role-badge"></span>
+                <h2 id="consultaFancyName"></h2>
+                <span id="consultaPlacaHeader" class="consulta-role-badge"></span>
             </div>
 
             <div class="consulta-body">
@@ -259,7 +274,7 @@ $total = count($vehicles);
                             <span id="consultaPlacaDetalhe"></span>
                         </div>
                         <div class="consulta-field">
-                            <label>Modelo</label>
+                            <label>Marca / Modelo / Versão</label>
                             <span id="consultaModeloDetalhe"></span>
                         </div>
                         <div class="consulta-field">
@@ -274,7 +289,89 @@ $total = count($vehicles);
                 </div>
 
                 <div class="consulta-section">
-                    <h3><i class="fa-solid fa-gear"></i> Sistema</h3>
+                    <h3><i class="fa-solid fa-file-invoice"></i> Documentação (CRLV)</h3>
+                    <div class="consulta-grid">
+                        <div class="consulta-field">
+                            <label>RENAVAM</label>
+                            <span id="consultaRenavam"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Número do Chassi / VIN</label>
+                            <span id="consultaChassi"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Ano Modelo</label>
+                            <span id="consultaAnoModelo"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Ano Fabricação</label>
+                            <span id="consultaAnoFabricacao"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Combustível</label>
+                            <span id="consultaCombustivel"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Exercício</label>
+                            <span id="consultaExercicio"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="consulta-section">
+                    <h3><i class="fa-solid fa-gear"></i> Características Técnicas</h3>
+                    <div class="consulta-grid">
+                        <div class="consulta-field">
+                            <label>Espécie / Tipo</label>
+                            <span id="consultaEspecie"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Carroceria</label>
+                            <span id="consultaCarroceria"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Peso Bruto Total (t)</label>
+                            <span id="consultaPesoBruto"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Capacidade (t)</label>
+                            <span id="consultaCapacidade"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Potência / Cilindrada</label>
+                            <span id="consultaPotencia"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>CMT</label>
+                            <span id="consultaCMT"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Eixos</label>
+                            <span id="consultaEixos"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Lotação</label>
+                            <span id="consultaLotacao"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="consulta-section">
+                    <h3><i class="fa-solid fa-user-tie"></i> Proprietário</h3>
+                    <div class="consulta-grid">
+                        <div class="consulta-field">
+                            <label>CPF / CNPJ do Proprietário</label>
+                            <span id="consultaOwnerDoc"></span>
+                        </div>
+                        <div class="consulta-field">
+                            <label>Nome / Proprietário</label>
+                            <span id="consultaOwnerName"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="consulta-section">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Sistema</h3>
                     <div class="consulta-grid">
                         <div class="consulta-field">
                             <label>Cadastrado em</label>
@@ -398,8 +495,6 @@ $total = count($vehicles);
     <script src="../js/menu.js"></script>
     <script>
         function abrirModalConsulta(vehicle) {
-            var statusColors = { 'ativo': '#28a745', 'desligado': '#c0392b' };
-
             var foto = document.getElementById('consultaFoto');
             var placeholder = document.getElementById('consultaFotoPlaceholder');
 
@@ -412,15 +507,29 @@ $total = count($vehicles);
                 placeholder.style.display = 'flex';
             }
 
-            var dot = document.getElementById('consultaStatusBadge');
-            dot.style.background = statusColors[vehicle.status] || '#999';
-
-            document.getElementById('consultaPlaca').textContent = vehicle.plate_number;
-            document.getElementById('consultaModelo').textContent = vehicle.model;
+            document.getElementById('consultaFancyName').textContent = vehicle.fancy_name || vehicle.model || '—';
+            document.getElementById('consultaPlacaHeader').textContent = vehicle.plate_number;
             document.getElementById('consultaPlacaDetalhe').textContent = vehicle.plate_number;
             document.getElementById('consultaModeloDetalhe').textContent = vehicle.model;
+            document.getElementById('consultaRenavam').textContent = vehicle.renavam || '—';
+            document.getElementById('consultaChassi').textContent = vehicle.chassis_number || '—';
+            document.getElementById('consultaAnoModelo').textContent = vehicle.year_model || '—';
+            document.getElementById('consultaAnoFabricacao').textContent = vehicle.year_manufactured || '—';
+            document.getElementById('consultaCombustivel').textContent = vehicle.fuel || '—';
+            document.getElementById('consultaExercicio').textContent = vehicle.exercise_year || '—';
+            document.getElementById('consultaEspecie').textContent = vehicle.species_type || '—';
+            document.getElementById('consultaCarroceria').textContent = vehicle.bodywork || '—';
+            document.getElementById('consultaPesoBruto').textContent = fmtDecBr(vehicle.gross_weight) || '—';
+            document.getElementById('consultaCapacidade').textContent = fmtDecBr(vehicle.capacity) || '—';
+            document.getElementById('consultaPotencia').textContent = vehicle.power_displacement || '—';
+            document.getElementById('consultaCMT').textContent = fmtDecBr(vehicle.cmt) || '—';
+            document.getElementById('consultaEixos').textContent = vehicle.axles || '—';
+            document.getElementById('consultaLotacao').textContent = vehicle.occupancy || '—';
+            document.getElementById('consultaOwnerDoc').textContent = vehicle.owner_document || '—';
+            document.getElementById('consultaOwnerName').textContent = vehicle.owner_name || '—';
             document.getElementById('consultaKM').textContent = parseInt(vehicle.current_km).toLocaleString('pt-BR') + ' km';
 
+            var statusColors = { 'ativo': '#28a745', 'desligado': '#c0392b' };
             var statusEl = document.getElementById('consultaStatusDetalhe');
             statusEl.textContent = vehicle.status === 'ativo' ? 'Ativo' : 'Inativo';
             statusEl.style.color = statusColors[vehicle.status] || '#999';
@@ -432,6 +541,11 @@ $total = count($vehicles);
 
             document.getElementById('modalConsulta').classList.add('active');
             document.body.classList.add('no-scroll');
+        }
+
+        function fmtDecBr(v) {
+            if (v === null || v === undefined || v === '') return '';
+            return String(v).replace('.', ',');
         }
 
         function formatarDataHora(dataStr) {

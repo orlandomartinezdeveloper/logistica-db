@@ -25,9 +25,29 @@ $conn->set_charset(DB_CHARSET);
 |--------------------------------------------------------------------------
 */
 
-$plateNumber = strtoupper(trim($_POST['plate_number'] ?? ''));
-$model       = trim($_POST['model'] ?? '');
-$currentKm   = (int)($_POST['current_km'] ?? 0);
+$plateNumber        = strtoupper(trim($_POST['plate_number'] ?? ''));
+$model              = trim($_POST['model'] ?? '');
+$fancyName          = trim($_POST['fancy_name'] ?? '');
+$renavam            = trim($_POST['renavam'] ?? '');
+$chassisNumber      = strtoupper(trim($_POST['chassis_number'] ?? ''));
+$yearModel          = trim($_POST['year_model'] ?? '');
+$yearManufactured   = trim($_POST['year_manufactured'] ?? '');
+$fuel               = trim($_POST['fuel'] ?? '');
+$speciesType        = trim($_POST['species_type'] ?? '');
+$bodywork           = trim($_POST['bodywork'] ?? '');
+$exerciseYear       = trim($_POST['exercise_year'] ?? '');
+$ownerDocument      = trim($_POST['owner_document'] ?? '');
+$ownerName          = trim($_POST['owner_name'] ?? '');
+$powerDisplacement  = trim($_POST['power_displacement'] ?? '');
+$axles              = trim($_POST['axles'] ?? '');
+$occupancy          = trim($_POST['occupancy'] ?? '');
+$grossWeightTxt     = str_replace(',', '.', trim($_POST['gross_weight'] ?? ''));
+$capacityTxt        = str_replace(',', '.', trim($_POST['capacity'] ?? ''));
+$cmtTxt             = str_replace(',', '.', trim($_POST['cmt'] ?? ''));
+$grossWeight        = ($grossWeightTxt !== '') ? (float)$grossWeightTxt : null;
+$capacity           = ($capacityTxt !== '') ? (float)$capacityTxt : null;
+$cmt                = ($cmtTxt !== '') ? (float)$cmtTxt : null;
+$currentKm          = (int)($_POST['current_km'] ?? 0);
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +56,26 @@ $currentKm   = (int)($_POST['current_km'] ?? 0);
 */
 
 $_SESSION['old_input_vehicles'] = [
-    'plate_number' => $plateNumber,
-    'model'        => $model,
-    'current_km'   => $currentKm,
+    'plate_number'       => $plateNumber,
+    'model'              => $model,
+    'fancy_name'         => $fancyName,
+    'renavam'            => $renavam,
+    'chassis_number'     => $chassisNumber,
+    'year_model'         => $yearModel,
+    'year_manufactured'  => $yearManufactured,
+    'fuel'               => $fuel,
+    'gross_weight'       => $grossWeightTxt,
+    'capacity'           => $capacityTxt,
+    'species_type'       => $speciesType,
+    'bodywork'           => $bodywork,
+    'exercise_year'      => $exerciseYear,
+    'owner_document'     => $ownerDocument,
+    'owner_name'         => $ownerName,
+    'power_displacement' => $powerDisplacement,
+    'cmt'                => $cmtTxt,
+    'axles'              => $axles,
+    'occupancy'          => $occupancy,
+    'current_km'         => $currentKm,
 ];
 
 /*
@@ -131,80 +168,96 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
 
     $uploadDir = __DIR__ . "/../../img/vehicles/";
     if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
+        if (!@mkdir($uploadDir, 0755, true)) {
+            error_log("Falha ao criar diretorio: $uploadDir");
+            header("Location: vehicles_register.php?error=upload_error");
+            exit();
+        }
+    }
+
+    if (!is_writable($uploadDir)) {
+        error_log("Diretorio sem permissao de escrita: $uploadDir");
+        header("Location: vehicles_register.php?error=upload_error");
+        exit();
     }
 
     $newName = uniqid("vehicle_", true) . ".jpg";
     $destination = $uploadDir . $newName;
 
-    $targetWidth = 1000;
-    $targetHeight = 1000;
-    $jpegQuality = 75;
+    $gdAvailable = function_exists('imagecreatefromjpeg') && function_exists('imagecreatetruecolor') && function_exists('imagejpeg');
 
-    switch ($imageInfo['mime']) {
-        case 'image/jpeg':
-            $sourceImage = imagecreatefromjpeg($_FILES['photo']['tmp_name']);
-            break;
-        case 'image/png':
-            $sourceImage = imagecreatefrompng($_FILES['photo']['tmp_name']);
-            break;
-        case 'image/webp':
-            $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
-            break;
-        default:
-            header("Location: vehicles_register.php?error=invalid_image");
-            exit();
-    }
+    if ($gdAvailable) {
+        $targetWidth = 1000;
+        $targetHeight = 1000;
+        $jpegQuality = 75;
 
-    if (!$sourceImage) {
-        header("Location: vehicles_register.php?error=upload_error");
-        exit();
-    }
+        $sourceImage = null;
 
-    $resizedImage = imagecreatetruecolor($targetWidth, $targetHeight);
+        switch ($imageInfo['mime']) {
+            case 'image/jpeg':
+                $sourceImage = imagecreatefromjpeg($_FILES['photo']['tmp_name']);
+                break;
+            case 'image/png':
+                $sourceImage = imagecreatefrompng($_FILES['photo']['tmp_name']);
+                break;
+            case 'image/webp':
+                if (function_exists('imagecreatefromwebp')) {
+                    $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
+                }
+                break;
+        }
 
-    if ($imageInfo['mime'] === 'image/png') {
-        imagealphablending($resizedImage, false);
-        imagesavealpha($resizedImage, true);
-        $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
-        imagefilledrectangle($resizedImage, 0, 0, $targetWidth, $targetHeight, $transparent);
-    }
+        if (!$sourceImage) {
+            $saved = move_uploaded_file($_FILES['photo']['tmp_name'], $destination);
+        } else {
+            $origWidth = imagesx($sourceImage);
+            $origHeight = imagesy($sourceImage);
+            $origRatio = $origWidth / $origHeight;
 
-    $origWidth = imagesx($sourceImage);
-    $origHeight = imagesy($sourceImage);
-    $ratioOrig = $origWidth / $origHeight;
-    $ratioTarget = $targetWidth / $targetHeight;
+            if ($origWidth > $origHeight) {
+                $targetWidth = 1000;
+                $targetHeight = (int)round($targetWidth / $origRatio);
+            } else {
+                $targetHeight = 1000;
+                $targetWidth = (int)round($targetHeight * $origRatio);
+            }
 
-    if ($ratioOrig > $ratioTarget) {
-        $newHeight = $origHeight;
-        $newWidth = (int)($origHeight * $ratioTarget);
-        $srcX = (int)(($origWidth - $newWidth) / 2);
-        $srcY = 0;
+            $resizedImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+            if ($imageInfo['mime'] === 'image/png') {
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+                $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+                imagefilledrectangle($resizedImage, 0, 0, $targetWidth, $targetHeight, $transparent);
+            } else {
+                $white = imagecolorallocate($resizedImage, 255, 255, 255);
+                imagefilledrectangle($resizedImage, 0, 0, $targetWidth, $targetHeight, $white);
+            }
+
+            imagecopyresampled(
+                $resizedImage, $sourceImage,
+                0, 0, 0, 0,
+                $targetWidth, $targetHeight,
+                $origWidth, $origHeight
+            );
+
+            $saved = imagejpeg($resizedImage, $destination, $jpegQuality);
+
+            imagedestroy($sourceImage);
+            imagedestroy($resizedImage);
+        }
     } else {
-        $newWidth = $origWidth;
-        $newHeight = (int)($origWidth / $ratioTarget);
-        $srcX = 0;
-        $srcY = (int)(($origHeight - $newHeight) / 2);
+        $saved = move_uploaded_file($_FILES['photo']['tmp_name'], $destination);
     }
-
-    imagecopyresampled(
-        $resizedImage, $sourceImage,
-        0, 0, $srcX, $srcY,
-        $targetWidth, $targetHeight,
-        $newWidth, $newHeight
-    );
-
-    $saved = imagejpeg($resizedImage, $destination, $jpegQuality);
-
-    imagedestroy($sourceImage);
-    imagedestroy($resizedImage);
 
     if (!$saved) {
+        error_log("Falha ao salvar imagem: $destination");
         header("Location: vehicles_register.php?error=upload_error");
         exit();
     }
 
     $photo_url = "img/vehicles/" . $newName;
+    error_log("Foto do veiculo salva: $photo_url");
 }
 
 /*
@@ -214,8 +267,14 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
 */
 
 $stmt = $conn->prepare("
-    INSERT INTO vehicles (plate_number, model, photo_url, current_km, created_at)
-    VALUES (?, ?, ?, ?, NOW())
+    INSERT INTO vehicles (
+        plate_number, fancy_name, renavam, chassis_number, model,
+        year_model, year_manufactured, fuel, gross_weight, capacity,
+        species_type, bodywork, exercise_year, owner_document, owner_name,
+        power_displacement, cmt, axles, occupancy,
+        photo_url, current_km, created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 ");
 
 if (!$stmt) {
@@ -224,7 +283,14 @@ if (!$stmt) {
     exit();
 }
 
-$stmt->bind_param("sssi", $plateNumber, $model, $photo_url, $currentKm);
+$stmt->bind_param(
+    "ssssssssddssssssdsssi",
+    $plateNumber, $fancyName, $renavam, $chassisNumber, $model,
+    $yearModel, $yearManufactured, $fuel, $grossWeight, $capacity,
+    $speciesType, $bodywork, $exerciseYear, $ownerDocument, $ownerName,
+    $powerDisplacement, $cmt, $axles, $occupancy,
+    $photo_url, $currentKm
+);
 
 if ($stmt->execute()) {
     unset($_SESSION['old_input_vehicles']);
@@ -233,7 +299,8 @@ if ($stmt->execute()) {
     header("Location: vehicles_consult.php?success=registered");
     exit();
 } else {
-    error_log("Erro ao inserir veículo: " . $stmt->error);
+    error_log("Erro ao inserir veiculo: " . $stmt->error);
+    error_log("Dados: plate=$plateNumber, model=$model, km=$currentKm, photo=" . ($photo_url ?: 'vazio'));
     header("Location: vehicles_register.php?error=server_error");
     exit();
 }

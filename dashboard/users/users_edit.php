@@ -147,6 +147,7 @@ $user_name = $_SESSION['user_name'] ?? 'Usuário';
                 <a class="active" href="users_select.php"><i class="fa-solid fa-users"></i> Usuários</a>
                 <a href="#"><i class="fa-solid fa-id-card"></i> Motoristas</a>
                 <a href="../vehicles/vehicles_select.php"><i class="fa-solid fa-truck"></i> Frota</a>
+                <a href="../locais/locais_select.php"><i class="fa-solid fa-location-dot"></i> Locais</a>
                 <a href="#"><i class="fa-solid fa-route"></i> Rota</a>
             </nav>
 

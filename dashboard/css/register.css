@@ -211,3 +211,20 @@
         height: 100px;
     }
 }
+
+/* Link de voltar abaixo do formulário (edição) */
+.form-links {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.form-links a {
+    color: #2c7da0;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-links a:hover {
+    text-decoration: underline;
+}

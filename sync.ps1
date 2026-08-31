@@ -20,7 +20,7 @@ param(
 $repoPath    = "F:\Projeto-Web\calebitotransporte"
 $xamppPath   = "C:\xampp\htdocs\calebitotransporte"
 $extensions  = @("*.php", "*.css", "*.js", "*.html", "*.sql", "*.json", "*.md")
-$excludeDirs = @("img", ".git", "node_modules")
+$excludeDirs = @("img", ".git", "node_modules", ".opencode", ".claude", ".impeccable")
 
 # ============================================================
 #  Funciones de ajuste de rutas
@@ -28,17 +28,18 @@ $excludeDirs = @("img", ".git", "node_modules")
 
 function Convert-RepoToXampp {
     param([string]$content, [string]$RelativePath = "")
-    # Config require (subfolder: dashboard/users/ or dashboard/vehicles/ needs ../../config.php)
-    if ($RelativePath -like "dashboard\users\*" -or $RelativePath -like "dashboard\vehicles\*") {
+    # Subcarpetas de dashboard (dashboard\xxx\arquivo.php) requieren un nivel extra
+    $isSubfolder = ($RelativePath -like "dashboard\*\*")
+    # Config require (subfolder: precisa ../../config.php, sino ../config.php)
+    if ($isSubfolder) {
         $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../../config.php'"
     } else {
         $content = $content -replace "require\s+'\/home\/calebito\/config\.php'", "require __DIR__ . '/../config.php'"
     }
-    # Imágenes: subfolder (dashboard/users/ or dashboard/vehicles/) → triple to double
-    if ($RelativePath -like "dashboard\users\*" -or $RelativePath -like "dashboard\vehicles\*") {
+    # Imágenes: subfolder → triple a doble; página principal → doble a single
+    if ($isSubfolder) {
         $content = $content -replace "\.\.\/\.\.\/\.\.\/img\/", "../../img/"
     } else {
-        # Imágenes: standard (dashboard/) → double to single
         $content = $content -replace "\.\.\/\.\.\/img\/", "../img/"
     }
     return $content
@@ -59,13 +60,18 @@ function Convert-XamppToRepo {
 # ============================================================
 
 function Test-FilesEqual {
-    param([string]$Path1, [string]$Path2, [string]$RelativePath = "")
-    $c1 = Get-Content $Path1 -Raw -Encoding UTF8
-    $c2 = Get-Content $Path2 -Raw -Encoding UTF8
-    # Normalizar: aplicar ambas conversiones y comparar
-    $norm1 = Convert-RepoToXampp $c1 $RelativePath
-    $norm2 = Convert-RepoToXampp $c2 $RelativePath
-    return ($norm1 -eq $norm2)
+    param(
+        [string]$SourcePath,
+        [string]$DestPath,
+        [string]$RelativePath = "",
+        [scriptblock]$Converter
+    )
+    $sourceContent = Get-Content $SourcePath -Raw -Encoding UTF8
+    $destContent   = Get-Content $DestPath -Raw -Encoding UTF8
+    # El destino está sincronizado solo si su contenido coincide EXACTAMENTE
+    # con la forma convertida del origen para esta dirección.
+    $expected = & $Converter $sourceContent $RelativePath
+    return ($destContent -eq $expected)
 }
 
 # ============================================================
@@ -119,7 +125,7 @@ function Sync-Direction {
         }
 
         if (Test-Path $destFile) {
-            if (Test-FilesEqual $file.FullName $destFile $relativePath) {
+            if (Test-FilesEqual -SourcePath $file.FullName -DestPath $destFile -RelativePath $relativePath -Converter $Converter) {
                 $skipped += $relativePath
                 continue
             }

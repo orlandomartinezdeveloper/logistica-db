@@ -19,11 +19,31 @@ if ($conn->connect_error) {
 
 $conn->set_charset(DB_CHARSET);
 
-$vehicleId   = (int)($_POST['vehicle_id'] ?? 0);
-$plateNumber = strtoupper(trim($_POST['plate_number'] ?? ''));
-$model       = trim($_POST['model'] ?? '');
-$currentKm   = (int)($_POST['current_km'] ?? 0);
-$status      = trim($_POST['status'] ?? 'ativo');
+$vehicleId          = (int)($_POST['vehicle_id'] ?? 0);
+$plateNumber        = strtoupper(trim($_POST['plate_number'] ?? ''));
+$model              = trim($_POST['model'] ?? '');
+$fancyName          = trim($_POST['fancy_name'] ?? '');
+$renavam            = trim($_POST['renavam'] ?? '');
+$chassisNumber      = strtoupper(trim($_POST['chassis_number'] ?? ''));
+$yearModel          = trim($_POST['year_model'] ?? '');
+$yearManufactured   = trim($_POST['year_manufactured'] ?? '');
+$fuel               = trim($_POST['fuel'] ?? '');
+$speciesType        = trim($_POST['species_type'] ?? '');
+$bodywork           = trim($_POST['bodywork'] ?? '');
+$exerciseYear       = trim($_POST['exercise_year'] ?? '');
+$ownerDocument      = trim($_POST['owner_document'] ?? '');
+$ownerName          = trim($_POST['owner_name'] ?? '');
+$powerDisplacement  = trim($_POST['power_displacement'] ?? '');
+$axles              = trim($_POST['axles'] ?? '');
+$occupancy          = trim($_POST['occupancy'] ?? '');
+$grossWeightTxt     = str_replace(',', '.', trim($_POST['gross_weight'] ?? ''));
+$capacityTxt        = str_replace(',', '.', trim($_POST['capacity'] ?? ''));
+$cmtTxt             = str_replace(',', '.', trim($_POST['cmt'] ?? ''));
+$grossWeight        = ($grossWeightTxt !== '') ? (float)$grossWeightTxt : null;
+$capacity           = ($capacityTxt !== '') ? (float)$capacityTxt : null;
+$cmt                = ($cmtTxt !== '') ? (float)$cmtTxt : null;
+$currentKm          = (int)($_POST['current_km'] ?? 0);
+$status             = trim($_POST['status'] ?? 'ativo');
 
 if ($vehicleId <= 0) {
     header("Location: vehicles_edit.php?error=vehicle_not_found");
@@ -108,69 +128,92 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
         exit();
     }
 
-    $targetWidth = 1000;
-    $targetHeight = 1000;
-    $jpegQuality = 75;
-
-    switch ($imageInfo['mime']) {
-        case 'image/jpeg':
-            $sourceImage = imagecreatefromjpeg($_FILES['photo']['tmp_name']);
-            break;
-        case 'image/png':
-            $sourceImage = imagecreatefrompng($_FILES['photo']['tmp_name']);
-            break;
-        case 'image/webp':
-            $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
-            break;
-        default:
-            header("Location: vehicles_edit.php?id=$vehicleId&error=invalid_image");
+    $uploadDir = __DIR__ . "/../../img/vehicles/";
+    if (!is_dir($uploadDir)) {
+        if (!@mkdir($uploadDir, 0755, true)) {
+            error_log("Falha ao criar diretorio: $uploadDir");
+            header("Location: vehicles_edit.php?id=$vehicleId&error=upload_error");
             exit();
+        }
     }
 
-    if (!$sourceImage) {
+    if (!is_writable($uploadDir)) {
+        error_log("Diretorio sem permissao de escrita: $uploadDir");
         header("Location: vehicles_edit.php?id=$vehicleId&error=upload_error");
         exit();
     }
 
-    $resizedImage = imagecreatetruecolor($targetWidth, $targetHeight);
-
-    $origWidth = imagesx($sourceImage);
-    $origHeight = imagesy($sourceImage);
-    $ratioOrig = $origWidth / $origHeight;
-    $ratioTarget = $targetWidth / $targetHeight;
-
-    if ($ratioOrig > $ratioTarget) {
-        $newHeight = $origHeight;
-        $newWidth = (int)($origHeight * $ratioTarget);
-        $srcX = (int)(($origWidth - $newWidth) / 2);
-        $srcY = 0;
-    } else {
-        $newWidth = $origWidth;
-        $newHeight = (int)($origWidth / $ratioTarget);
-        $srcX = 0;
-        $srcY = (int)(($origHeight - $newHeight) / 2);
-    }
-
-    imagecopyresampled(
-        $resizedImage, $sourceImage,
-        0, 0, $srcX, $srcY,
-        $targetWidth, $targetHeight,
-        $newWidth, $newHeight
-    );
-
-    $uploadDir = __DIR__ . "/../../img/vehicles/";
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-    }
-
     $newName = uniqid("vehicle_", true) . ".jpg";
     $destination = $uploadDir . $newName;
-    $saved = imagejpeg($resizedImage, $destination, $jpegQuality);
 
-    imagedestroy($sourceImage);
-    imagedestroy($resizedImage);
+    $gdAvailable = function_exists('imagecreatefromjpeg') && function_exists('imagecreatetruecolor') && function_exists('imagejpeg');
+
+    if ($gdAvailable) {
+        $targetWidth = 1000;
+        $targetHeight = 1000;
+        $jpegQuality = 75;
+
+        $sourceImage = null;
+
+        switch ($imageInfo['mime']) {
+            case 'image/jpeg':
+                $sourceImage = imagecreatefromjpeg($_FILES['photo']['tmp_name']);
+                break;
+            case 'image/png':
+                $sourceImage = imagecreatefrompng($_FILES['photo']['tmp_name']);
+                break;
+            case 'image/webp':
+                if (function_exists('imagecreatefromwebp')) {
+                    $sourceImage = imagecreatefromwebp($_FILES['photo']['tmp_name']);
+                }
+                break;
+        }
+
+        if (!$sourceImage) {
+            $saved = move_uploaded_file($_FILES['photo']['tmp_name'], $destination);
+        } else {
+            $origWidth = imagesx($sourceImage);
+            $origHeight = imagesy($sourceImage);
+            $origRatio = $origWidth / $origHeight;
+
+            if ($origWidth > $origHeight) {
+                $targetWidth = 1000;
+                $targetHeight = (int)round($targetWidth / $origRatio);
+            } else {
+                $targetHeight = 1000;
+                $targetWidth = (int)round($targetHeight * $origRatio);
+            }
+
+            $resizedImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+            if ($imageInfo['mime'] === 'image/png') {
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+                $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+                imagefilledrectangle($resizedImage, 0, 0, $targetWidth, $targetHeight, $transparent);
+            } else {
+                $white = imagecolorallocate($resizedImage, 255, 255, 255);
+                imagefilledrectangle($resizedImage, 0, 0, $targetWidth, $targetHeight, $white);
+            }
+
+            imagecopyresampled(
+                $resizedImage, $sourceImage,
+                0, 0, 0, 0,
+                $targetWidth, $targetHeight,
+                $origWidth, $origHeight
+            );
+
+            $saved = imagejpeg($resizedImage, $destination, $jpegQuality);
+
+            imagedestroy($sourceImage);
+            imagedestroy($resizedImage);
+        }
+    } else {
+        $saved = move_uploaded_file($_FILES['photo']['tmp_name'], $destination);
+    }
 
     if (!$saved) {
+        error_log("Falha ao salvar imagem: $destination");
         header("Location: vehicles_edit.php?id=$vehicleId&error=upload_error");
         exit();
     }
@@ -202,19 +245,39 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) 
 if ($photo_url !== null) {
     $stmt = $conn->prepare("
         UPDATE vehicles SET
-            plate_number = ?, model = ?, current_km = ?,
-            status = ?, photo_url = ?, updated_at = NOW()
+            plate_number = ?, fancy_name = ?, renavam = ?, chassis_number = ?, model = ?,
+            year_model = ?, year_manufactured = ?, fuel = ?, gross_weight = ?, capacity = ?,
+            species_type = ?, bodywork = ?, exercise_year = ?, owner_document = ?, owner_name = ?,
+            power_displacement = ?, cmt = ?, axles = ?, occupancy = ?,
+            current_km = ?, status = ?, photo_url = ?, updated_at = NOW()
         WHERE id = ?
     ");
-    $stmt->bind_param("ssisSi", $plateNumber, $model, $currentKm, $status, $photo_url, $vehicleId);
+    $stmt->bind_param(
+        "ssssssssddssssssdssissi",
+        $plateNumber, $fancyName, $renavam, $chassisNumber, $model,
+        $yearModel, $yearManufactured, $fuel, $grossWeight, $capacity,
+        $speciesType, $bodywork, $exerciseYear, $ownerDocument, $ownerName,
+        $powerDisplacement, $cmt, $axles, $occupancy,
+        $currentKm, $status, $photo_url, $vehicleId
+    );
 } else {
     $stmt = $conn->prepare("
         UPDATE vehicles SET
-            plate_number = ?, model = ?, current_km = ?,
-            status = ?, updated_at = NOW()
+            plate_number = ?, fancy_name = ?, renavam = ?, chassis_number = ?, model = ?,
+            year_model = ?, year_manufactured = ?, fuel = ?, gross_weight = ?, capacity = ?,
+            species_type = ?, bodywork = ?, exercise_year = ?, owner_document = ?, owner_name = ?,
+            power_displacement = ?, cmt = ?, axles = ?, occupancy = ?,
+            current_km = ?, status = ?, updated_at = NOW()
         WHERE id = ?
     ");
-    $stmt->bind_param("ssisi", $plateNumber, $model, $currentKm, $status, $vehicleId);
+    $stmt->bind_param(
+        "ssssssssddssssssdssisi",
+        $plateNumber, $fancyName, $renavam, $chassisNumber, $model,
+        $yearModel, $yearManufactured, $fuel, $grossWeight, $capacity,
+        $speciesType, $bodywork, $exerciseYear, $ownerDocument, $ownerName,
+        $powerDisplacement, $cmt, $axles, $occupancy,
+        $currentKm, $status, $vehicleId
+    );
 }
 
 if ($stmt->execute()) {
@@ -223,7 +286,8 @@ if ($stmt->execute()) {
     header("Location: vehicles_consult.php?success=updated");
     exit();
 } else {
-    error_log("Erro ao atualizar veículo: " . $stmt->error);
+    error_log("Erro ao atualizar veículo (ID: $vehicleId): " . $stmt->error);
+    error_log("Dados: plate=$plateNumber, model=$model, km=$currentKm, status=$status, photo=" . ($photo_url ?? 'null'));
     $stmt->close();
     $conn->close();
     header("Location: vehicles_edit.php?id=$vehicleId&error=server_error");
